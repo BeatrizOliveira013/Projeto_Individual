@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro - PUBG</title>
+  
+  
+</head>
+<body>
+    <div class="container" id="container">
+       
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <h2>Login</h2>
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Senha" required>
+                <button>Entrar</button>
+                <a href="#">Esqueci a senha</a>
+            </form>
+        </div>
+
+        
+        <div class="form-container sign-up-container">
+            <form id="registerForm">
+                <h2>Cadastro</h2>
+                <input type="text" placeholder="Nome" required>
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Senha" required>
+                <button>Cadastrar</button>
+            </form>
+        </div>
+
+       
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h2>Bem-vindo!</h2>
+                    <p>Para continuar, faça login com suas credenciais</p>
+                    <button class="ghost" id="signIn">Login</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h2>Olá, Soldado!</h2>
+                    <p>Crie uma conta e junte-se à batalha</p>
+                    <button class="ghost" id="signUp">Cadastrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
