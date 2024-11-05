@@ -1,51 +1,118 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login e Cadastro - PUBG</title>
-  
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBG FÃS </title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+  <script src="./js/sessao.js"></script>
+
+ 
+
+
+
 </head>
-<body>
+
+<body onload="listar()">
+
+  </div>
+  <a href="index.html"><img class="img_seta" src="IMG/seta-direita.png" alt="" /></a>
+
+  <span id="concluído"></span>
+  </div>
+  <div class="div_flex">
     <div class="container" id="container">
-       
-        <div class="form-container sign-in-container">
-            <form id="loginForm">
-                <h2>Login</h2>
-                <input type="email" placeholder="E-mail" required>
-                <input type="password" placeholder="Senha" required>
-                <button>Entrar</button>
-                <a href="#">Esqueci a senha</a>
-            </form>
-        </div>
-
-        
-        <div class="form-container sign-up-container">
-            <form id="registerForm">
-                <h2>Cadastro</h2>
-                <input type="text" placeholder="Nome" required>
-                <input type="email" placeholder="E-mail" required>
-                <input type="password" placeholder="Senha" required>
-                <button>Cadastrar</button>
-            </form>
-        </div>
-
-       
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h2>Bem-vindo!</h2>
-                    <p>Para continuar, faça login com suas credenciais</p>
-                    <button class="ghost" id="signIn">Login</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h2>Olá, Soldado!</h2>
-                    <p>Crie uma conta e junte-se à batalha</p>
-                    <button class="ghost" id="signUp">Cadastrar</button>
-                </div>
+      <div class="content1 sign-in-container">
+        <form class="login">
+          <h2 class="tituloForm1">Login</h2>
+          <p class="texto">Acesse com um e-mail existente</p>
+     
+          <p class="texto">Ou faça o login com os dados criados aqui</p>
+          <div class="inputs">
+            <div class="div-input">
+              <input type="text" placeholder="E-mail" id="input_email" />
             </div>
+            <div id="mensagemErroEmail" class="mensagensErros"></div>
+
+            <div class="div-input">
+              <input type="password" placeholder="Senha" id="input_senha" />
+              <br />
+            </div>
+            <div id="mensagemErroSenha" class="mensagensErros"></div>
+          </div>
+          <a class="btn1" onclick="validarLogin()">LOGIN</a>
+          <a class="esqueciSenha" href="#">Esqueci a senha</a>
+
+          <span id="mensagem_concluido" class="mensagem_concluido"></span>
+        </form>
+      </div>
+
+      <div class="content1 sign-up-container">
+        <form class="login">
+          <h2 class="tituloForm1">Crie sua Conta</h2>
+          <p class="texto">Ou crie use seu e-mail para se cadastrar</p>
+
+
+          <div class="inputs">
+            <div class="div-input-select">
+        
+              <div id="mensagemErroSelectCadastro" class="mensagensErros"></div>
+            </div>
+            <div class="div-input">
+              <input type="text" placeholder="Nome" id="input_nomeCadastro" />
+            </div>
+            <div id="mensagemErroNomeCadastro" class="mensagensErros"></div>
+
+            <div class="div-input">
+              <input type="text" placeholder="E-mail" id="input_emailCadastro" />
+            </div>
+            <div id="mensagemErroEmailCadastro" class="mensagensErros"></div>
+
+            <div class="div-input">
+              <input type="password" placeholder="Senha" id="input_senhaCadastro" />
+            </div>
+            <div id="mensagemErroSenhaCadastro" class="mensagensErros"></div>
+          </div>
+
+          <a onclick="validarCadastro()" class="btn1"> Cadastrar </a>
+          <div id="div_aguardar" class="loading-div">
+            <img src="./IMG/iconetwitterx.png" style="display: none;" id="loading-gif">
+          </div>
+          <a class="esqueciSenha" href="#">Esqueci a senha</a>
+
+          <div id="mensagemGeral" style="padding: 5px 10px; display: none;"></div>
+        </form>
+      </div>
+
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="content2 contentDir">
+            <h2 class="tituloInform">Olá, seja bem-vindo(a)!</h2>
+            <p class="texto2">
+              Cadastre-se com seu e-mail para se juntar a nós! <br /><br />
+              Caso <b>possui </b> uma conta, clique no botão abaixo para fazer
+              seu login.
+            </p>
+            <a class="btn2" id="irCadastro" onclick="mudarPagina()">
+              CADASTRAR</a>
+          </div>
+
+          <div class="content2 contentEsq">
+            <h2 class="tituloInform">Bem vindo, novamente!</h2>
+            <p class="texto2">
+             <br />
+              <br />
+              Caso <b>não possua</b> uma conta, junte-se a nós clicando no
+              botão abaixo
+            </p>
+            <a class="btn2" id="irLogin" onclick="mudarPagina()">LOGIN</a>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </body>
+
 </html>
