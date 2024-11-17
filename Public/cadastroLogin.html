@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login e Cadastro</title>
+  <script src="https://kit.fontawesome.com/cf6fa412bd.js" crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #181818;
+      color: #f39c12;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    nav {
+      position: fixed;
+      top: 0;
+      background-color: #202020;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      z-index: 1000;
+      
+    }
+
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f39c12;
+      text-decoration: none;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      padding: 8px 16px;
+      border-radius: 4px;
+    }
+
+    nav ul li a:hover {
+      background-color: #f39c12;
+      color: #202020;
+    }
+
+    /* Form Styles */
+    .container {
+      background-color: #1e1e1e;
+      padding: 6px;
+      width: 350px;
+      height: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 0 20px 0 #f39c12;
+    }
+
+    form {
+      position: absolute;
+      margin-top: 80px;
+      transition: .5s;
+      width: 300px;
+      height: 400px;
+    }
+
+    .buttonsForm {
+      margin-top: 40px;
+      position: relative;
+      border-radius: 30px;
+      box-shadow: 0 0 7px 0 #f39c12;
+    }
+
+    .buttonsForm button {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: #fadea4;
+      position: relative;
+      padding: 10px 22px;
+    }
+
+    .btnColor {
+      position: absolute;
+      width: 108px;
+      height: 100%;
+      background: linear-gradient(to right, #f39c12, #d35400);
+      border-radius: 30px;
+      transition: .3s;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"] {
+      border: none;
+      margin-top: 40px;
+      border-radius: 60px;
+      padding: 8px 0 8px 35px;
+      outline: none;
+      width: 100%;
+      background-color: #282828;
+      color: #f39c12;
+    }
+
+    button[type="submit"] {
+      background: #f39c12;
+      color: #181818;
+      border-radius: 30px;
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 8px 0;
+      font-size: 15px;
+      margin-top: 40px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #d35400;
+    }
+
+    .divCheck {
+      margin: 10px 0 0 5px;
+      width: 80%;
+      font-size: 13px;
+      color: #f39c12;
+    }
+
+    #signin {
+      left: 25px;
+    }
+
+    #signup {
+      left: 400px;
+    }
+
+    i {
+      position: absolute;
+      left: 0;
+      padding: 10px 10px;
+      color: #f39c12;
+    }
+
+    .iEmail {
+      top: 40px;
+    }
+
+    .iPassword {
+      top: 114px;
+    }
+
+    .iPassword2 {
+      top: 190px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <a href="index.html" class="logo">PUBG FÃS</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cadastroLogin.html">Login</a></li>
+      <li><a href="cadastroLogin.html">Cadastro</a></li>
+      <li><a href="game.html">Jogo da Memória</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- Form Container -->
+  <div class="container">
+    <div class="buttonsForm">
+      <div class="btnColor"></div>
+      <button id="btnSignin">Entrar</button>
+      <button id="btnSignup">Cadastrar</button>
+    </div>
+
+    <!-- Login -->
+    <form id="signin">
+      <input type="email" id="loginEmail" placeholder="E-mail" required />
+      <i class="fas fa-envelope iEmail"></i>
+      <input type="password" id="loginSenha" placeholder="Senha" required />
+      <i class="fas fa-lock iPassword"></i>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <!-- Cadastro -->
+    <form id="signup">
+      <input type="text" id="cadastroNome" placeholder="Nome" required />
+      <input type="email" id="cadastroEmail" placeholder="E-mail" required />
+      <input type="password" id="cadastroSenha" placeholder="Senha" required />
+      <i class="fas fa-lock iPassword"></i>
+      <button type="submit">Cadastrar</button>
+    </form>
+  </div>
+
+ 
+</body>
+
+</html>
+
+
+<script>
+  const apiUrl = 'http://localhost:3333/usuarios';
+
+  // Alternar entre login e cadastro
+  const formSignin = document.getElementById('signin');
+  const formSignup = document.getElementById('signup');
+  const btnColor = document.querySelector('.btnColor');
+  document.getElementById('btnSignin').addEventListener('click', () => {
+    formSignin.style.left = '25px';
+    formSignup.style.left = '450px';
+    btnColor.style.left = '0px';
+  });
+  document.getElementById('btnSignup').addEventListener('click', () => {
+    formSignin.style.left = '-450px';
+    formSignup.style.left = '25px';
+    btnColor.style.left = '110px';
+  });
+
+  // Login - Validar e Salvar Sessão
+  formSignin.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value.trim();
+    try {
+      const response = await fetch(`${apiUrl}/autenticar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      });
+      if (response.ok) {
+        const usuario = await response.json();
+        sessionStorage.setItem('ID_USUARIO', usuario.id);
+        sessionStorage.setItem('NOME_USUARIO', usuario.nome);
+        sessionStorage.setItem('EMAIL_USUARIO', usuario.email);
+        alert(`Bem-vindo, ${usuario.nome}!`);
+        window.location.href = 'quiz.html'; // Redireciona para a dashboard
+      } else {
+        alert('Credenciais inválidas.');
+      }
+    } catch (error) {
+      console.error('Erro ao autenticar:', error);
+      alert('Erro ao tentar realizar o login.');
+    }
+  });
+
+  // Cadastro - Validar e Salvar Novo Usuário
+  formSignup.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('cadastroNome').value.trim();
+    const email = document.getElementById('cadastroEmail').value.trim();
+    const senha = document.getElementById('cadastroSenha').value.trim();
+    try {
+      const response = await fetch(`${apiUrl}/cadastrar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, senha }),
+      });
+      if (response.ok) {
+        alert('Cadastro realizado com sucesso! Faça login para continuar.');
+        formSignup.style.left = '450px';
+        formSignin.style.left = '25px';
+        btnColor.style.left = '0px';
+      } else {
+        const error = await response.text();
+        alert(`Erro no cadastro: ${error}`);
+      }
+    } catch (error) {
+      console.error('Erro ao realizar cadastro:', error);
+      alert('Erro ao tentar realizar o cadastro.');
+    }
+  });
+
+  // Logout - Limpar Sessão e Redirecionar
+  document.getElementById('logout')?.addEventListener('click', () => {
+    sessionStorage.clear(); // Limpa os dados da sessão
+    alert('Você saiu com sucesso.');
+    window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login
+  });
+</script>
+
+</body>
+
+</html>
