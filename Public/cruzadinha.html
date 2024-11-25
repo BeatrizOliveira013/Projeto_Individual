@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cruzadinha PUBG</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #111;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        header h1 {
+            color: #f39c12;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2b2b2b;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: #333;
+            border: 2px solid #f39c12;
+        }
+
+        td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 1.2rem;
+            color: #fff;
+            border: 1px solid #444;
+            background-color: #1a1a1a;
+            position: relative;
+        }
+
+        .active {
+            background-color: #202020;
+            border-color: #f39c12;
+        }
+
+        .filled {
+            background-color: #f39c12;
+            color: #111;
+        }
+
+        button {
+            background-color: #f39c12;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e67e22;
+        }
+
+        #div_questions input {
+            padding: 10px;
+            border: 1px solid #f39c12;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #202020;
+        }
+
+        #div_questions input::placeholder {
+            color: #bbb;
+        }
+
+        footer {
+            background-color: #111;
+            padding: 10px;
+            text-align: center;
+            color: #f39c12;
+            border-top: 2px solid #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Cruzadinha PUBG</h1>
+    </header>
+    <div class="container">
+        <div id="div_canvasCruzada"></div>
+        <div id="div_questions">
+            <span id="span_questionText"></span>
+            <br>
+            <input type="text" id="input_answer" placeholder="Sua resposta">
+            <br>
+            <button onclick="verify()">Verificar</button>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 PUBG Cruzadinha</p>
+    </footer>
+
+    <script>
+const words = [
+    {
+        id: 1,
+        question: "Em que ano o PUBG foi lançado?",
+        answer: "2017",
+        positions: [
+            { x: 0, y: 0 },
+            { x: 0, y: 1 },
+            { x: 0, y: 2 },
+            { x: 0, y: 3 },
+        ],
+    },
+    {
+        id: 2,
+        question: "Quem é o criador do PUBG?",
+        answer: "BRENDAN",
+        positions: [
+            { x: 0, y: 3 },
+            { x: 1, y: 3 },
+            { x: 2, y: 3 },
+            { x: 3, y: 3 },
+            { x: 4, y: 3 },
+            { x: 5, y: 3 },
+            { x: 6, y: 3 },
+        ],
+    },
+    {
+        id: 3,
+        question: "Qual é o nome do mapa clássico?",
+        answer: "ERANGEL",
+        positions: [
+            { x: 6, y: 3 },
+            { x: 6, y: 4 },
+            { x: 6, y: 5 },
+            { x: 6, y: 6 },
+            { x: 6, y: 7 },
+            { x: 6, y: 8 },
+            { x: 6, y: 9 },
+        ],
+    },
+];
+
+const gridSize = 10;
+const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(""));
+
+let currentQuestion = 0;
+let score = 0;
+let errors = []; 
+
+function renderGrid() {
+    const table = document.createElement("table");
+    for (let i = 0; i < gridSize; i++) {
+        const row = document.createElement("tr");
+        for (let j = 0; j < gridSize; j++) {
+            const cell = document.createElement("td");
+            cell.id = `cell_${i}_${j}`;
+            if (grid[i][j]) cell.classList.add("active");
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+    document.getElementById("div_canvasCruzada").innerHTML = "";
+    document.getElementById("div_canvasCruzada").appendChild(table);
+}
+
+function initializeGrid() {
+    words.forEach(word => {
+        word.positions.forEach((pos, index) => {
+            if (!grid[pos.x][pos.y]) grid[pos.x][pos.y] = word.answer[index];
+        });
+    });
+}
+
+function startGame() {
+    const userId = sessionStorage.getItem("ID_USUARIO");
+    if (!userId) {
+        alert("Você precisa estar logado para jogar. Redirecionando para a página de login.");
+        window.location.href = "/cadastroLogin.html";
+        return;
+    }
+
+    currentQuestion = 0;
+    score = 0;
+    errors = []; 
+    initializeGrid();
+    renderGrid();
+    showQuestion();
+}
+
+function showQuestion() {
+    document.getElementById("span_questionText").textContent = words[currentQuestion].question;
+}
+
+function verify() {
+    const answer = document.getElementById("input_answer").value.trim().toUpperCase();
+    if (answer === words[currentQuestion].answer) {
+        words[currentQuestion].positions.forEach(({ x, y }) => {
+            const cell = document.getElementById(`cell_${x}_${y}`);
+            cell.textContent = grid[x][y];
+            cell.classList.add("filled");
+        });
+        score += 10;
+        currentQuestion++;
+        if (currentQuestion < words.length) {
+            showQuestion();
+        } else {
+            alert("Parabéns! Você completou a cruzadinha.");
+            saveScore();
+        }
+    } else {
+        alert("Resposta incorreta!");
+        errors.push(words[currentQuestion].id); 
+    }
+}
+
+async function saveScore() {
+    const userId = sessionStorage.getItem("ID_USUARIO");
+    try {
+        console.log("Enviando dados:", { usuarioId: userId, pontuacao: score, erros: errors }); 
+        const response = await fetch("http://localhost:3333/cruzadinha/pontuacao", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usuarioId: userId, pontuacao: score, erros: errors }), 
+        });
+
+        if (response.ok) {
+            alert("Pontuação salva com sucesso!");
+            window.location.href = "/dashboard.html";
+        } else {
+            const errorText = await response.text();
+            console.error("Erro na resposta do servidor:", errorText);
+            throw new Error("Erro ao salvar a pontuação.");
+        }
+    } catch (error) {
+        console.error("Erro ao salvar pontuação:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", startGame);
+
+
+    </script>
+</body>
+
+</html>
