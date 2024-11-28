@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz | PUBG FÃS</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-color: #181818;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      background-color: #202020;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f39c12;
+      text-decoration: none;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      padding: 8px 16px;
+      border-radius: 4px;
+    }
+
+    nav ul li a:hover {
+      background-color: #f39c12;
+      color: #202020;
+    }
+
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #282828;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card p {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #f39c12;
+    }
+
+    .card label {
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #f39c12;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #e67e22;
+    }
+
+    .result-card {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: #202020;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+      color: #fff;
+    }
+
+    .result-card h3 {
+      color: #f39c12;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <a href="index.html" class="logo">PUBG FÃS</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cadastroLogin.html">Login</a></li>
+      <li><a href="cadastroLogin.html">Cadastro</a></li>
+      <li><a href="game.html">Jogo da Memória</a></li>
+      <li><a href="cruzadinha.html">Cruzadinha</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- Quiz Container -->
+  <div class="quiz-container" id="quizContainer">
+    <!-- Perguntas serão inseridas aqui dinamicamente -->
+  </div>
+
+  <div id="resultCard" class="result-card" style="display: none;">
+    <h3 id="nome"></h3>
+    <p id="perfil"></p>
+  </div>
+
+  <script>
+// Verificação de sessão
+document.addEventListener('DOMContentLoaded', () => {
+  const usuario_id = sessionStorage.getItem('ID_USUARIO');
+  if (!usuario_id) {
+    alert('Você precisa estar logado para acessar esta página.');
+    window.location.href = 'cadastroLogin.html';
+  }
+});
+
+const questions = [
+  {
+    question: "Qual sua prioridade ao cair no mapa?",
+    options: ["rushador: Equipar-se rapidamente", "camper: Procurar lugares seguros", "estrategico: Buscar os amigos", "mediano: Vou onde o jogo me leva"]
+  },
+  {
+    question: "Você prefere:",
+    options: ["rushador: Armas potentes, mesmo que difíceis de encontrar", "camper: Qualquer arma, desde que esteja bem escondido", "estrategico: Armas para médio e longo alcance", "mediano: Qualquer arma que apareça"]
+  },
+  {
+    question: "Quando seus amigos precisam de ajuda, você:",
+    options: ["rushador: Corre para salvá-los", "estrategico: Planeja antes de agir", "camper: Tenta distrair os inimigos", "mediano: Vejo na hora"]
+  },
+  {
+    question: "Você prefere:",
+    options: ["rushador: Combate corpo a corpo", "camper: Snipers em locais altos", "estrategico: Ambientes urbanos", "mediano: Qualquer lugar"]
+  },
+  {
+    question: "Durante o jogo, você costuma:",
+    options: ["rushador: Liderar a equipe", "camper: Seguir as instruções", "estrategico: Propor novas estratégias", "mediano: Jogar conforme o fluxo"]
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+
+questions.forEach((q, index) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <p>${index + 1}. ${q.question}</p>
+    ${q.options.map(opt => {
+      const [value, text] = opt.split(": ");
+      return `<label><input type="radio" name="q${index + 1}" value="${value}"> ${text}</label>`;
+    }).join("<br>")}
+  `;
+  quizContainer.appendChild(card);
+});
+
+const submitButton = document.createElement('button');
+submitButton.textContent = "Enviar";
+quizContainer.appendChild(submitButton);
+
+submitButton.addEventListener('click', async () => {
+  const answers = {};
+  let allAnswered = true;
+
+  questions.forEach((_, index) => {
+    const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+    if (!selected) allAnswered = false;
+    else answers[`q${index + 1}`] = selected.value;
+  });
+
+  if (!allAnswered) {
+    alert("Por favor, responda todas as perguntas!");
+    return;
+  }
+
+  const counts = { rushador: 0, camper: 0, estrategico: 0, mediano: 0 };
+  Object.values(answers).forEach(value => counts[value]++);
+  const perfil = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+
+  const usuario_id = sessionStorage.getItem('ID_USUARIO');
+  const nome = sessionStorage.getItem('NOME_USUARIO');
+  if (!usuario_id) {
+    alert("Você precisa estar logado para salvar o quiz!");
+    window.location = "cadastroLogin.html";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3333/usuarios/quiz-resultados", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ usuario_id, perfil }),
+});
+
+    if (response.ok) {
+      document.getElementById('quizContainer').style.display = 'none';
+      document.getElementById('resultCard').style.display = 'block';
+      document.getElementById('nome').textContent = `Parabéns, ${nome}!`;
+      document.getElementById('perfil').textContent = `Seu perfil é: ${perfil}`;
+    } else {
+      alert("Erro ao salvar o resultado do quiz!");
+    }
+  } catch (error) {
+    alert("Erro ao conectar com a API. Tente novamente mais tarde.");
+    console.error(error);
+  }
+});
+
+  </script>
+</body>
+
+</html>
