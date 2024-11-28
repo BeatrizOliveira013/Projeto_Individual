@@ -17,6 +17,7 @@ var HOST_APP = process.env.APP_HOST || 'localhost';
 var app = express();
 
 // Importação das rotas
+var feedRoutes = require("./routes/feedRoutes"); // Importando as rotas de avisos
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 //var avisosRouter = require("./src/routes/avisos");
@@ -31,6 +32,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // Configuração das rotas
+// Rotas
+app.use("/feed", feedRoutes); // Configurando as rotas de avisos
 app.use("/", indexRouter);
 app.use("/usuario", usuarioRouter);
 //app.use("/avisos", avisosRouter);
