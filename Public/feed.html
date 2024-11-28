@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="shortcut icon" href="../assets/icon/pubg.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUBG Fans | Feed</title>
+
+    <link rel="stylesheet" href="./../css/feed.css">
+    <link rel="stylesheet" href="./../css/estilo.css">
+    <script src="../js/feed.js"></script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body onload="validarSessao(), atualizarFeed()" style="background-color: #161618;">
+
+    <div class="container">
+
+        <header class="header">
+            <h1>PUBG Fans</h1>
+            <h3>Olá, <span id="b_usuario">Usuário</span>!</h3>
+            <nav>
+                <a href="home.html">Início</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="feed.html" class="active">Feed</a>
+                <button onclick="limparSessao()">Sair</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section class="postar">
+                <h2>Compartilhe sua experiência</h2>
+                <form id="form_postagem" onsubmit="return publicar()">
+                    <label>
+                        Título:
+                        <input name="titulo" id="titulo" type="text" maxlength="100" required>
+                    </label>
+                    <label>
+                        Conteúdo:
+                        <textarea name="descricao" id="descricao" maxlength="500" rows="4" required></textarea>
+                    </label>
+                    <button type="submit">Publicar</button>
+                </form>
+            </section>
+
+            <section class="feed">
+                <h2>Postagens Recentes</h2>
+                <div id="feed_container" class="feed-container">
+                    <!-- Postagens serão carregadas dinamicamente -->
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+</body>
+
+</html>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    atualizarFeed();
+});
+
+function limparFormulario() {
+    document.getElementById("form_postagem").reset();
+}
+
+function publicar() {
+    const idUsuario = sessionStorage.getItem("ID_USUARIO");
+    const titulo = document.getElementById("titulo").value;
+    const descricao = document.getElementById("descricao").value;
+
+    if (!titulo || !descricao) {
+        alert("Preencha todos os campos antes de publicar!");
+        return false;
+    }
+
+    fetch(`/avisos/publicar/${idUsuario}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titulo, descricao })
+    })
+        .then((resposta) => {
+            if (resposta.ok) {
+                alert("Postagem publicada com sucesso!");
+                limparFormulario();
+                atualizarFeed();
+            } else {
+                alert("Erro ao publicar a postagem!");
+            }
+        })
+        .catch((erro) => console.error("Erro na publicação:", erro));
+
+    return false; // Evita o reload da página
+}
+
+function editar(idPostagem) {
+    const novaDescricao = prompt("Digite a nova descrição:");
+    if (!novaDescricao) return;
+
+    fetch(`/avisos/editar/${idPostagem}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ descricao: novaDescricao })
+    })
+        .then((resposta) => {
+            if (resposta.ok) {
+                alert("Postagem editada com sucesso!");
+                atualizarFeed();
+            } else {
+                alert("Erro ao editar a postagem!");
+            }
+        })
+        .catch((erro) => console.error("Erro na edição:", erro));
+}
+
+function deletar(idPostagem) {
+    if (!confirm("Tem certeza que deseja excluir esta postagem?")) return;
+
+    fetch(`/avisos/deletar/${idPostagem}`, {
+        method: "DELETE"
+    })
+        .then((resposta) => {
+            if (resposta.ok) {
+                alert("Postagem excluída com sucesso!");
+                atualizarFeed();
+            } else {
+                alert("Erro ao excluir a postagem!");
+            }
+        })
+        .catch((erro) => console.error("Erro na exclusão:", erro));
+}
+
+function atualizarFeed() {
+    const feedContainer = document.getElementById("feed_container");
+    feedContainer.innerHTML = "<p>Carregando postagens...</p>";
+
+    fetch("/avisos/listar")
+        .then((resposta) => {
+            if (resposta.ok) {
+                return resposta.json();
+            } else if (resposta.status === 204) {
+                feedContainer.innerHTML = "<p>Nenhuma postagem encontrada.</p>";
+                throw new Error("Nenhuma postagem encontrada.");
+            } else {
+                throw new Error("Erro ao carregar o feed.");
+            }
+        })
+        .then((postagens) => {
+            feedContainer.innerHTML = "";
+
+            postagens.forEach((postagem) => {
+                const postagemElement = document.createElement("div");
+                postagemElement.classList.add("postagem");
+
+                postagemElement.innerHTML = `
+                    <span>ID: ${postagem.idAviso}</span>
+                    <span>Título: ${postagem.titulo}</span>
+                    <span>Autor: ${postagem.nome}</span>
+                    <p>${postagem.descricao}</p>
+                    <button onclick="editar(${postagem.idAviso})">Editar</button>
+                    <button onclick="deletar(${postagem.idAviso})">Deletar</button>
+                `;
+
+                feedContainer.appendChild(postagemElement);
+            });
+        })
+        .catch((erro) => console.error("Erro ao atualizar o feed:", erro));
+}
+
+</script>
+<style>
+    body {
+    font-family: 'Exo 2', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    background-color: #161618;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1d;
+    padding: 10px 20px;
+    border-bottom: 3px solid #ffc107;
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.header nav a,
+.header button {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #fff;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.header nav a.active {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.header button:hover,
+.header nav a:hover {
+    color: #ff5722;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.postar, .feed {
+    background-color: #1a1a1d;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.postar h2, .feed h2 {
+    margin-top: 0;
+    color: #ffc107;
+}
+
+.postar form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.postar form label {
+    font-weight: bold;
+}
+
+.postar form input, .postar form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #2c2c34;
+    color: #fff;
+}
+
+.postar form button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: #1a1a1d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.postar form button:hover {
+    background-color: #ff5722;
+}
+
+.feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.postagem {
+    padding: 15px;
+    background-color: #2c2c34;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.postagem span {
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.postagem p {
+    margin: 10px 0 0 0;
+    color: #ddd;
+}
+
+.postagem button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #1a1a1d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.postagem button:hover {
+    background-color: #ff5722;
+}
+
+</style>
