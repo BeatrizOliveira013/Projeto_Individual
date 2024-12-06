@@ -314,3 +314,42 @@ positions: [
 ]; 
 
 
+const gridSize = 10; 
+
+const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill("")); 
+
+ 
+
+let currentQuestion = 0; 
+
+let score = 0; 
+
+let errors = [];  
+
+ 
+
+function renderGrid() { 
+
+    const table = document.createElement("table"); 
+
+    for (let i = 0; i < gridSize; i++) { 
+
+        const row = document.createElement("tr"); 
+
+        for (let j = 0; j < gridSize; j++) { 
+
+            const cell = document.createElement("td"); 
+
+            cell.id = `cell_${i}_${j}`; 
+
+            if (grid[i][j]) cell.classList.add("active"); 
+
+            row.appendChild(cell); 
+
+        } 
+
+        table.appendChild(row); 
+
+    } 
+
+
