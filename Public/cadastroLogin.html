@@ -579,13 +579,24 @@ alert('Erro ao tentar realizar o cadastro.');
 }); 
 
 
+  // Logout - Limpar Sessão e Redirecionar 
 
-// Logout - Limpar Sessão e Redirecionar 
-
-document.getElementById('logout')?.addEventListener('click', () => { 
+  document.getElementById('logout')?.addEventListener('click', () => { 
 
 sessionStorage.clear(); // Limpa os dados da sessão 
 
 alert('Você saiu com sucesso.'); 
 
 window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login 
+
+}); 
+
+</script> 
+
+
+
+</body> 
+
+
+
+</html> 
