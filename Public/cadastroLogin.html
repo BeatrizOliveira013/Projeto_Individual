@@ -567,3 +567,25 @@ const error = await response.text();
 alert(`Erro no cadastro: ${error}`); 
 
 } 
+
+} catch (error) { 
+
+console.error('Erro ao realizar cadastro:', error); 
+
+alert('Erro ao tentar realizar o cadastro.'); 
+
+} 
+
+}); 
+
+
+
+// Logout - Limpar Sessão e Redirecionar 
+
+document.getElementById('logout')?.addEventListener('click', () => { 
+
+sessionStorage.clear(); // Limpa os dados da sessão 
+
+alert('Você saiu com sucesso.'); 
+
+window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login 
