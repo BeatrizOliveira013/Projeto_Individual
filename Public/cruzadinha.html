@@ -442,4 +442,26 @@ if (answer === words[currentQuestion].answer) {
 
         saveScore(); 
 
+    } 
+
+} else { 
+
+    alert("Resposta incorreta!"); 
+
+    errors.push(words[currentQuestion].id);  
+
+} 
+
+} 
+
+
+
+async function saveScore() { 
+
+const userId = sessionStorage.getItem("ID_USUARIO"); 
+
+try { 
+
+    console.log("Enviando dados:", { usuarioId: userId, pontuacao: score, erros: errors });  
+
 
