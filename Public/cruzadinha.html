@@ -390,6 +390,26 @@ if (!userId) {
 
 } 
 
+currentQuestion = 0; 
 
+score = 0; 
+
+errors = [];  
+
+initializeGrid(); 
+
+renderGrid(); 
+
+showQuestion(); 
+
+} 
+
+
+
+function showQuestion() { 
+
+document.getElementById("span_questionText").textContent = words[currentQuestion].question; 
+
+} 
 
 
