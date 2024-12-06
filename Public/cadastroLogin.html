@@ -526,3 +526,44 @@ try {
 
 }); 
 
+
+ // Cadastro - Validar e Salvar Novo Usuário 
+
+ formSignup.addEventListener('submit', async (e) => { 
+
+e.preventDefault(); 
+
+const nome = document.getElementById('cadastroNome').value.trim(); 
+
+const email = document.getElementById('cadastroEmail').value.trim(); 
+
+const senha = document.getElementById('cadastroSenha').value.trim(); 
+
+try { 
+
+  const response = await fetch(`${apiUrl}/cadastrar`, { 
+    method: 'POST', 
+
+headers: { 'Content-Type': 'application/json' }, 
+
+body: JSON.stringify({ nome, email, senha }), 
+
+}); 
+
+if (response.ok) { 
+
+alert('Cadastro realizado com sucesso! Faça login para continuar.'); 
+
+formSignup.style.left = '450px'; 
+
+formSignin.style.left = '25px'; 
+
+btnColor.style.left = '0px'; 
+
+} else { 
+
+const error = await response.text(); 
+
+alert(`Erro no cadastro: ${error}`); 
+
+} 
