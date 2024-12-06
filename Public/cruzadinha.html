@@ -475,6 +475,28 @@ body: JSON.stringify({ usuarioId: userId, pontuacao: score, erros: errors }),
 
 }); 
 
+if (response.ok) { 
 
+alert("Pontuação salva com sucesso!"); 
+
+window.location.href = "/dashboard.html"; 
+
+} else { 
+
+const errorText = await response.text(); 
+
+console.error("Erro na resposta do servidor:", errorText); 
+
+throw new Error("Erro ao salvar a pontuação."); 
+
+} 
+
+} catch (error) { 
+
+console.error("Erro ao salvar pontuação:", error); 
+
+} 
+
+} 
 
 
