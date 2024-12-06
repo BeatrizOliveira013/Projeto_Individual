@@ -473,3 +473,56 @@ document.getElementById('btnSignup').addEventListener('click', () => {
   btnColor.style.left = '110px'; 
 
 }); 
+
+// Login - Validar e Salvar Sessão 
+
+formSignin.addEventListener('submit', async (e) => { 
+
+e.preventDefault(); 
+
+const email = document.getElementById('loginEmail').value.trim(); 
+
+const senha = document.getElementById('loginSenha').value.trim(); 
+
+try { 
+
+  const response = await fetch(`${apiUrl}/autenticar`, { 
+
+    method: 'POST', 
+
+    headers: { 'Content-Type': 'application/json' }, 
+
+    body: JSON.stringify({ email, senha }), 
+
+  }); 
+
+  if (response.ok) { 
+
+    const usuario = await response.json(); 
+
+    sessionStorage.setItem('ID_USUARIO', usuario.id); 
+
+    sessionStorage.setItem('NOME_USUARIO', usuario.nome); 
+
+    sessionStorage.setItem('EMAIL_USUARIO', usuario.email); 
+
+    alert(`Bem-vindo, ${usuario.nome}!`); 
+
+    window.location.href = 'quiz.html'; // Redireciona para a dashboard 
+
+  } else { 
+
+    alert('Credenciais inválidas.'); 
+
+  } 
+
+} catch (error) { 
+
+  console.error('Erro ao autenticar:', error); 
+
+  alert('Erro ao tentar realizar o login.'); 
+
+} 
+
+}); 
+
