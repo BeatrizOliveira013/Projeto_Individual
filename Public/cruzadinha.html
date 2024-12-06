@@ -465,3 +465,16 @@ try {
     console.log("Enviando dados:", { usuarioId: userId, pontuacao: score, erros: errors });  
 
 
+    const response = await fetch("http://localhost:3333/cruzadinha/pontuacao", { 
+
+method: "POST", 
+
+headers: { "Content-Type": "application/json" }, 
+
+body: JSON.stringify({ usuarioId: userId, pontuacao: score, erros: errors }),  
+
+}); 
+
+
+
+
