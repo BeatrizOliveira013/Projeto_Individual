@@ -412,4 +412,34 @@ document.getElementById("span_questionText").textContent = words[currentQuestion
 
 } 
 
+function verify() { 
+
+const answer = document.getElementById("input_answer").value.trim().toUpperCase(); 
+
+if (answer === words[currentQuestion].answer) { 
+
+    words[currentQuestion].positions.forEach(({ x, y }) => { 
+
+        const cell = document.getElementById(`cell_${x}_${y}`); 
+
+        cell.textContent = grid[x][y]; 
+
+        cell.classList.add("filled"); 
+
+    }); 
+
+    score += 10; 
+
+    currentQuestion++; 
+
+    if (currentQuestion < words.length) { 
+
+        showQuestion(); 
+
+    } else { 
+
+        alert("Parabéns! Você completou a cruzadinha."); 
+
+        saveScore(); 
+
 
