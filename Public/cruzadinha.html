@@ -376,3 +376,20 @@ words.forEach(word => {
 } 
 
 
+function startGame() { 
+
+const userId = sessionStorage.getItem("ID_USUARIO"); 
+
+if (!userId) { 
+
+    alert("Você precisa estar logado para jogar. Redirecionando para a página de login."); 
+
+    window.location.href = "/cadastroLogin.html"; 
+
+    return; 
+
+} 
+
+
+
+
