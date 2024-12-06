@@ -353,3 +353,26 @@ function renderGrid() {
     } 
 
 
+    document.getElementById("div_canvasCruzada").innerHTML = ""; 
+
+document.getElementById("div_canvasCruzada").appendChild(table); 
+
+} 
+
+
+
+function initializeGrid() { 
+
+words.forEach(word => { 
+
+    word.positions.forEach((pos, index) => { 
+
+        if (!grid[pos.x][pos.y]) grid[pos.x][pos.y] = word.answer[index]; 
+
+    }); 
+
+}); 
+
+} 
+
+
