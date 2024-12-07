@@ -1,28 +1,77 @@
-var database = require("../database/config")
+const database = require("../database/config");
 
 function autenticar(email, senha) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
-    var instrucaoSql = `
-        SELECT id, nome, email FROM usuario WHERE email = '${email}' AND senha = '${senha}';
+    const query = `
+        SELECT id, nome, email 
+        FROM usuario 
+        WHERE email = ? AND senha = ?;
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    return database.executar(query, [email, senha]);
 }
 
-// Coloque os mesmos parâmetros aqui. Vá para a var instrucaoSql
-function cadastrar(nome, email, senha, fkEmpresa) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha);
-    
-    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
-    //  e na ordem de inserção dos dados.
-    var instrucaoSql = `
-        INSERT INTO usuario (nome, email, senha, fk_empresa) VALUES ('${nome}', '${email}', '${senha}');
+function cadastrar(nome, email, senha) {
+    const query = `
+        INSERT INTO usuario (nome, email, senha) 
+        VALUES (?, ?, ?);
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    return database.executar(query, [nome, email, senha]);
+}
+
+function salvarResultadoQuiz(usuario_id, perfil) {
+    console.log("Acessando o model para salvar resultado do quiz:", usuario_id, perfil);
+
+    const query = `
+        INSERT INTO quiz_resultados (usuario_id, perfil, data_quiz) 
+        VALUES (?, ?, NOW());
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id, perfil]);
+}
+
+function salvarResultadoMemoria(usuario_id, tempo) {
+    console.log("Acessando o model para salvar resultado do jogo da memória:", usuario_id, tempo);
+
+    const query = `
+        INSERT INTO memoria_resultados (usuario_id, tempo, data_jogo) 
+        VALUES (?, ?, NOW());
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id, tempo]);
+}
+
+function obterResultadosQuiz(usuario_id) {
+    console.log("Acessando o model para obter resultados do quiz:", usuario_id);
+
+    const query = `
+        SELECT perfil, DATE_FORMAT(data_quiz, '%d/%m/%Y %H:%i') AS data 
+        FROM quiz_resultados 
+        WHERE usuario_id = ?;
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id]);
+}
+
+function obterResultadosMemoria(usuario_id) {
+    console.log("Acessando o model para obter resultados do jogo da memória:", usuario_id);
+
+    const query = `
+        SELECT tempo, DATE_FORMAT(data_jogo, '%d/%m/%Y %H:%i') AS data 
+        FROM memoria_resultados 
+        WHERE usuario_id = ?;
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id]);
 }
 
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    salvarResultadoQuiz,
+    salvarResultadoMemoria,
+    obterResultadosQuiz,
+    obterResultadosMemoria
 };
