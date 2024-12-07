@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/game.css">
+  <script defer src="../js/game.js"></script>
+  <title>Memory Game</title>
+</head>
+
+<body>
+  <main>
+    <header>
+      <span class="player"></span>
+      <span>Tempo: <span class="timer">00</span></span>
+    </header>
+    <div class="grid"></div>
+  </main>
+</body>
+
+</html>
+<style>
+    /* Global Styles */
+main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #181818; /* Fundo escuro */
+  background-size: cover;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 50px;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #202020; /* Fundo do header */
+  color: #f39c12; /* Texto laranja */
+  font-size: 1.2em;
+  width: 100%;
+  max-width: 800px;
+  padding: 30px;
+  margin: 0 0 30px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Grid for Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* Ajustado para 6 colunas */
+  gap: 15px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card Styles */
+.card {
+  aspect-ratio: 3/4;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  transform-style: preserve-3d;
+  background-color: #202020; /* Fundo do card */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+
+.face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  border: 3px solid #f39c12; /* Bordas laranja */
+  transition: all 0.4s ease;
+}
+
+.front {
+  transform: rotateY(180deg);
+}
+
+.back {
+  background-image: url('../images/back.png'); /* Verso da carta */
+  backface-visibility: hidden;
+}
+
+/* States */
+.reveal-card {
+  transform: rotateY(180deg); /* Revelar carta */
+}
+
+.disabled-card {
+  filter: saturate(0);
+  opacity: 0.5;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 920px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr); /* Ajuste para telas menores */
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr); /* Ajuste para telas muito pequenas */
+  }
+}
+
+</style>
+
+
+
+  <script>
+    const grid = document.querySelector('.grid');
+    const spanPlayer = document.querySelector('.player');
+    const timer = document.querySelector('.timer');
+
+    const characters = [
+      { name: 'jerry', format: 'png' },
+      { name: 'morty', format: 'jpg' },
+      { name: 'pickle-rick', format: 'jpg' },
+      { name: 'rick', format: 'jpg' },
+      { name: 'summer', format: 'jpg' },
+      { name: 'meeseeks', format: 'jpg' },
+      { name: 'scroopy', format: 'jpg' },
+      { name: 'pessoa-passaro', format: 'jpg' },
+      { name: 'jessica', format: 'jpg' },
+    ];
+
+    let firstCard = '';
+    let secondCard = '';
+    let startTime = 0;
+    let loop;
+
+    const checkEndGame = async () => {
+      const disabledCards = document.querySelectorAll('.disabled-card');
+
+      if (disabledCards.length === characters.length * 2) {
+        clearInterval(loop);
+        const totalTime = +timer.innerHTML;
+
+        alert(`Parabéns, ${spanPlayer.innerHTML}! Seu tempo foi de: ${totalTime} segundos.`);
+        await saveTime(totalTime); // Envia o tempo para a API
+      }
+    };
+
+    const saveTime = async (totalTime) => {
+      const userId = sessionStorage.getItem("ID_USUARIO");
+      if (!userId) {
+        alert("Você precisa estar logado para salvar seu tempo.");
+        window.location.href = "http://localhost:3333/cadastroLogin.html";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3333/memoria/salvar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usuarioId: userId, tempo: totalTime }),
+        });
+
+        if (response.ok) {
+          alert("Tempo salvo com sucesso!");
+          window.location.href = "/dashboard.html"; // Redireciona para a dashboard
+        } else {
+          const errorText = await response.text();
+          console.error("Erro na resposta do servidor:", errorText);
+          throw new Error("Erro ao salvar o tempo.");
+        }
+      } catch (error) {
+        console.error("Erro ao salvar o tempo:", error);
+      }
+    };
+
+    const checkCards = () => {
+      const firstCharacter = firstCard.getAttribute('data-character');
+      const secondCharacter = secondCard.getAttribute('data-character');
+
+      if (firstCharacter === secondCharacter) {
+        firstCard.firstChild.classList.add('disabled-card');
+        secondCard.firstChild.classList.add('disabled-card');
+
+        firstCard = '';
+        secondCard = '';
+
+        checkEndGame();
+      } else {
+        setTimeout(() => {
+          firstCard.classList.remove('reveal-card');
+          secondCard.classList.remove('reveal-card');
+
+          firstCard = '';
+          secondCard = '';
+        }, 500);
+      }
+    };
+
+    const revealCard = ({ target }) => {
+      if (target.parentNode.className.includes('reveal-card')) return;
+
+      if (!firstCard) {
+        target.parentNode.classList.add('reveal-card');
+        firstCard = target.parentNode;
+      } else if (!secondCard) {
+        target.parentNode.classList.add('reveal-card');
+        secondCard = target.parentNode;
+
+        checkCards();
+      }
+    };
+
+    const createCard = (character) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-character', character.name);
+
+      const front = document.createElement('div');
+      front.className = 'face front';
+      front.style.backgroundImage = `url('./images/${character.name}.${character.format}')`;
+
+      const back = document.createElement('div');
+      back.className = 'face back';
+      back.style.backgroundImage = "url('./images/back.png')";
+
+      card.appendChild(front);
+      card.appendChild(back);
+
+      card.addEventListener('click', revealCard);
+
+      return card;
+    };
+
+    const loadGame = () => {
+      const duplicateCharacters = [...characters, ...characters];
+      const shuffledArray = duplicateCharacters.sort(() => Math.random() - 0.5);
+
+      shuffledArray.forEach((character) => {
+        const card = createCard(character);
+        grid.appendChild(card);
+      });
+    };
+
+    const startTimer = () => {
+      timer.innerHTML = "0";
+      loop = setInterval(() => {
+        const currentTime = +timer.innerHTML;
+        timer.innerHTML = currentTime + 1;
+      }, 1000);
+    };
+
+    window.onload = () => {
+      const userId = sessionStorage.getItem("ID_USUARIO");
+      if (!userId) {
+        alert("Você precisa estar logado para jogar.");
+        window.location.href = "/cadastroLogin.html";
+        return;
+      }
+
+      spanPlayer.innerHTML = "Jogador"; // Exemplo: Substitua por `sessionStorage.getItem("NOME_USUARIO")` se necessário
+      startTimer();
+      loadGame();
+    };
+  </script>
+
+
+
