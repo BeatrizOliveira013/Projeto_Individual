@@ -29,7 +29,7 @@ async function obterDashboard(req, res) {
 
         const dados = await dashboardModel.obterDadosDoUsuario(usuario_id);
 
-        if (!dados) {
+        if (!dados || dados.length === 0) {
             return res.status(404).json({ message: "Nenhum dado encontrado para o usuário." });
         }
 

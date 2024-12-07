@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard PUBG</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        :root {
+            --primary-color: #f39c12;
+            --dark-color: #000000;
+            --white-color: #fff;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar {
+            width: 240px;
+            height: 100vh;
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 20px;
+            border-right: 2px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .navbar img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .navbar nav ul {
+            padding: 0;
+            width: 100%;
+        }
+
+        .navbar nav ul li {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .navbar nav ul li a {
+            color: var(--white-color);
+            text-decoration: none;
+            font-size: 1rem;
+            display: block;
+            text-align: center;
+            padding: 15px 20px;
+            background-color: rgba(255, 166, 0, 0.63);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar nav ul li a:hover {
+            background-color: var(--primary-color);
+        }
+
+        #dashboard {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .chart-wrapper {
+            flex: 1 1 45%;
+            background-color: var(--dark-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .chart-wrapper canvas {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="navbar">
+        <img src="images/face.jpg" alt="Foto do usuário pubg">
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="cruzadinha.html">Cruzadinha</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+                <li><a href="game.html">Game</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main id="dashboard">
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <h3>Predominância de Perfis</h3>
+                <canvas id="quizChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Tempo do Jogo da Memória</h3>
+                <canvas id="jogoDaMemoria"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Top 5 Jogadores da Cruzadinha</h3>
+                <canvas id="cruzadinhaChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Perguntas Mais Erradas</h3>
+                <canvas id="perguntasErradasChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = sessionStorage.getItem('ID_USUARIO');
+            if (!userId) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.href = 'cadastroLogin.html';
+                return;
+            }
+
+            try {
+                await carregarDashboard();
+                await carregarCruzadinhaEstatisticas();
+                await carregarMemoriaEstatisticas();
+            } catch (error) {
+                console.error("Erro ao carregar a dashboard:", error);
+            }
+        });
+
+        async function carregarDashboard() {
+            const response = await fetch('http://localhost:3333/dashboard');
+            if (!response.ok) throw new Error('Erro ao carregar os dados da dashboard.');
+
+            const data = await response.json();
+
+            const quizChart = new Chart(document.getElementById('quizChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.quiz.map(q => q.perfil),
+                    datasets: [{
+                        label: 'Perfis (%)',
+                        data: data.quiz.map(q => (q.total / data.participantes * 100).toFixed(2)),
+                        backgroundColor: ['rgba(243, 156, 18, 0.8)', 'rgba(52, 152, 219, 0.8)', 'rgba(46, 204, 113, 0.8)', 'rgba(231, 76, 60, 0.8)'],
+                    }],
+                },
+            });
+        }
+
+        async function carregarCruzadinhaEstatisticas() {
+            const response = await fetch('http://localhost:3333/cruzadinha/estatisticas');
+            if (!response.ok) throw new Error('Erro ao carregar estatísticas da cruzadinha.');
+
+            const data = await response.json();
+
+            new Chart(document.getElementById('cruzadinhaChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.cruzadinha.topJogadores.map(j => `Usuário ${j.usuario_id}`),
+                    datasets: [{
+                        label: 'Pontuação',
+                        data: data.cruzadinha.topJogadores.map(j => j.total_pontuacao),
+                        backgroundColor: 'rgba(243, 156, 18, 0.8)',
+                    }],
+                },
+            });
+
+            new Chart(document.getElementById('perguntasErradasChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: data.cruzadinha.perguntasErradas.map(p => `Pergunta ${p.pergunta_id}`),
+                    datasets: [{
+                        data: data.cruzadinha.perguntasErradas.map(p => p.erros),
+                        backgroundColor: ['#f39c12', '#e74c3c', '#3498db', '#9b59b6', '#2ecc71'],
+                    }],
+                },
+            });
+        }
+
+        async function carregarMemoriaEstatisticas() {
+            const response = await fetch('http://localhost:3333/memoria/top');
+            if (!response.ok) throw new Error('Erro ao carregar estatísticas do jogo da memória.');
+
+            const data = await response.json();
+
+            new Chart(document.getElementById('jogoDaMemoria').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.memoria.topTempos.map(j => `Usuário ${j.usuario_id}`),
+                    datasets: [{
+                        label: 'Tempo Recorde (s)',
+                        data: data.memoria.topTempos.map(j => j.tempo_recorde),
+                        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                    }],
+                },
+            });
+        }
+    </script>
+</body>
+
+</html>

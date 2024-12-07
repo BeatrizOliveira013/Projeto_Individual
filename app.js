@@ -2,11 +2,11 @@
 const dotenv = require("dotenv");
 
 // Carregamento das variáveis de ambiente do arquivo .env ou .env.dev
-const caminho_env = process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
+const caminho_env = process.env.AMBIENTE_PROCESSO === 'producao' ? '.env' : '.env.dev';
 dotenv.config({ path: caminho_env });
 
 // Verificação se a variável AMBIENTE foi carregada corretamente
-if (!process.env.AMBIENTE) {
+if (!process.env.AMBIENTE_PROCESSO) {
     console.error("O AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM .env OU dev.env OU app.js");
     process.exit(1); // Finaliza a execução se a variável não for encontrada
 }
@@ -27,6 +27,10 @@ const dashboardRouter = require("./src/routes/dashboard");
 const cruzadinhaRoutes = require("./src/routes/cruzadinha");
 const memoriaRoutes = require("./src/routes/memoria");
 const feedRoutes = require("./src/routes/feed");
+
+
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
