@@ -51,3 +51,37 @@ box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.7);
 } 
 
 
+
+table { 
+
+    border-collapse: collapse; 
+    
+    margin: 20px auto; 
+    
+    background-color: #333; 
+    
+    border: 2px solid #f39c12; 
+    
+    } 
+    
+    td { 
+    
+    width: 40px; 
+    
+    height: 40px; 
+    
+    text-align: center; 
+    
+    vertical-align: middle; 
+    
+    font-size: 1.2rem; 
+    
+    color: #fff; 
+    
+    border: 1px solid #444; 
+    
+    background-color: #1a1a1a; 
+    
+    position: relative; 
+    
+    } 
