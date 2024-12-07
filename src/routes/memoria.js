@@ -9,3 +9,10 @@ router.post("/salvar", memoriaController.salvarTempo);
 router.get("/top", memoriaController.obterTopTempos);
 
 module.exports = router;
+
+
+
+
+// Resultados do Jogo da Memória
+router.post("/game-resultados", usuarioController.salvarResultadoMemoria);
+router.get("/game-resultados/:usuario_id", usuarioController.obterResultadosMemoria);

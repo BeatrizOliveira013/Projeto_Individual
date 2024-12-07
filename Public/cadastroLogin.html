@@ -1,277 +1,277 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 
-<html lang="pt-BR"> 
+<html lang="pt-BR">
 
- 
 
-<head> 
 
-  <meta charset="UTF-8"> 
+<head>
 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Login e Cadastro</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://kit.fontawesome.com/cf6fa412bd.js" crossorigin="anonymous"></script> 
+  <title>Login e Cadastro</title>
+
+  <script src="https://kit.fontawesome.com/cf6fa412bd.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/loginCadastro.css">
 
 
-</head> 
+</head>
 
-<body> 
+<body>
 
-  <!-- Navbar --> 
+  <!-- Navbar -->
 
-  <nav> 
+  <nav>
 
-    <a href="index.html" class="logo">PUBG FÃS</a> 
+    <a href="index.html" class="logo">PUBG FÃS</a>
 
-    <ul> 
+    <ul>
 
-      <li><a href="index.html">Home</a></li> 
+      <li><a href="index.html">Home</a></li>
 
-      <li><a href="cadastroLogin.html">Login</a></li> 
+      <li><a href="cadastroLogin.html">Login</a></li>
 
-      <li><a href="cadastroLogin.html">Cadastro</a></li> 
+      <li><a href="cadastroLogin.html">Cadastro</a></li>
 
-      <li><a href="game.html">Jogo da Memória</a></li> 
+      <li><a href="game.html">Jogo da Memória</a></li>
 
-      <li><a href="cruzadinha.html">Cruzadinha</a></li> 
+      <li><a href="cruzadinha.html">Cruzadinha</a></li>
 
-      <li><a href="quiz.html">Quiz</a></li> 
+      <li><a href="quiz.html">Quiz</a></li>
 
-      <li><a href="dashboard.html">Dashboard</a></li> 
+      <li><a href="dashboard.html">Dashboard</a></li>
 
-    </ul> 
+    </ul>
 
-  </nav> 
+  </nav>
 
- 
 
-  <!-- Form Container --> 
 
-  <div class="container"> 
+  <!-- Form Container -->
 
-    <div class="buttonsForm"> 
+  <div class="container">
 
-      <div class="btnColor"></div> 
+    <div class="buttonsForm">
 
-      <button id="btnSignin">Entrar</button> 
+      <div class="btnColor"></div>
 
-      <button id="btnSignup">Cadastrar</button> 
+      <button id="btnSignin">Entrar</button>
 
-    </div> 
+      <button id="btnSignup">Cadastrar</button>
 
-     <!-- Login --> 
+    </div>
 
-     <form id="signin"> 
+    <!-- Login -->
 
-      <input type="email" id="loginEmail" placeholder="E-mail" required /> 
+    <form id="signin">
 
-      <i class="fas fa-envelope iEmail"></i> 
+      <input type="email" id="loginEmail" placeholder="E-mail" required />
 
-      <input type="password" id="loginSenha" placeholder="Senha" required /> 
+      <i class="fas fa-envelope iEmail"></i>
 
-      <i class="fas fa-lock iPassword"></i> 
+      <input type="password" id="loginSenha" placeholder="Senha" required />
 
-      <button type="submit">Entrar</button> 
+      <i class="fas fa-lock iPassword"></i>
 
-    </form> 
+      <button type="submit">Entrar</button>
 
- 
+    </form>
 
-    <!-- Cadastro --> 
 
-    <form id="signup"> 
 
-      <input type="text" id="cadastroNome" placeholder="Nome" required /> 
+    <!-- Cadastro -->
 
-      <input type="email" id="cadastroEmail" placeholder="E-mail" required /> 
+    <form id="signup">
 
-      <input type="password" id="cadastroSenha" placeholder="Senha" required /> 
+      <input type="text" id="cadastroNome" placeholder="Nome" required />
 
-      <i class="fas fa-lock iPassword"></i> 
+      <input type="email" id="cadastroEmail" placeholder="E-mail" required />
 
-      <button type="submit">Cadastrar</button> 
+      <input type="password" id="cadastroSenha" placeholder="Senha" required />
 
-    </form> 
+      <i class="fas fa-lock iPassword"></i>
 
-  </div> 
+      <button type="submit">Cadastrar</button>
 
- 
+    </form>
 
-  
+  </div>
 
-</body> 
 
- 
 
-</html> 
 
- 
 
- 
+</body>
 
-<script> 
 
-  const apiUrl = 'http://localhost:3333/usuario'; 
 
- 
+</html>
+
+
+
+
+
+<script>
+
+  const apiUrl = 'http://localhost:3333/usuario';
+
+
 
   // Alternar entre login e cadastro 
 
   const formSignin = document.getElementById('signin');
 
 
-  const formSignup = document.getElementById('signup'); 
+  const formSignup = document.getElementById('signup');
 
-const btnColor = document.querySelector('.btnColor'); 
+  const btnColor = document.querySelector('.btnColor');
 
-document.getElementById('btnSignin').addEventListener('click', () => { 
+  document.getElementById('btnSignin').addEventListener('click', () => {
 
-  formSignin.style.left = '25px'; 
+    formSignin.style.left = '25px';
 
-  formSignup.style.left = '450px'; 
+    formSignup.style.left = '450px';
 
-  btnColor.style.left = '0px'; 
+    btnColor.style.left = '0px';
 
-}); 
+  });
 
-document.getElementById('btnSignup').addEventListener('click', () => { 
+  document.getElementById('btnSignup').addEventListener('click', () => {
 
-  formSignin.style.left = '-450px'; 
+    formSignin.style.left = '-450px';
 
-  formSignup.style.left = '25px'; 
+    formSignup.style.left = '25px';
 
-  btnColor.style.left = '110px'; 
+    btnColor.style.left = '110px';
 
-}); 
+  });
 
-// Login - Validar e Salvar Sessão 
+  // Login - Validar e Salvar Sessão 
 
-formSignin.addEventListener('submit', async (e) => { 
+  formSignin.addEventListener('submit', async (e) => {
 
-e.preventDefault(); 
+    e.preventDefault();
 
-const email = document.getElementById('loginEmail').value.trim(); 
+    const email = document.getElementById('loginEmail').value.trim();
 
-const senha = document.getElementById('loginSenha').value.trim(); 
+    const senha = document.getElementById('loginSenha').value.trim();
 
-try { 
+    try {
 
-  const response = await fetch(`${apiUrl}/autenticar`, { 
+      const response = await fetch(`${apiUrl}/autenticar`, {
 
-    method: 'POST', 
+        method: 'POST',
 
-    headers: { 'Content-Type': 'application/json' }, 
+        headers: { 'Content-Type': 'application/json' },
 
-    body: JSON.stringify({ email, senha }), 
+        body: JSON.stringify({ email, senha }),
 
-  }); 
+      });
 
-  if (response.ok) { 
+      if (response.ok) {
 
-    const usuario = await response.json(); 
+        const usuario = await response.json();
 
-    sessionStorage.setItem('ID_USUARIO', usuario.id); 
+        sessionStorage.setItem('ID_USUARIO', usuario.id);
 
-    sessionStorage.setItem('NOME_USUARIO', usuario.nome); 
+        sessionStorage.setItem('NOME_USUARIO', usuario.nome);
 
-    sessionStorage.setItem('EMAIL_USUARIO', usuario.email); 
+        sessionStorage.setItem('EMAIL_USUARIO', usuario.email);
 
-    alert(`Bem-vindo, ${usuario.nome}!`); 
+        alert(`Bem-vindo, ${usuario.nome}!`);
 
-    window.location.href = 'quiz.html'; // Redireciona para a dashboard 
+        window.location.href = 'quiz.html'; // Redireciona para a dashboard 
 
-  } else { 
+      } else {
 
-    alert('Credenciais inválidas.'); 
+        alert('Credenciais inválidas.');
 
-  } 
+      }
 
-} catch (error) { 
+    } catch (error) {
 
-  console.error('Erro ao autenticar:', error); 
+      console.error('Erro ao autenticar:', error);
 
-  alert('Erro ao tentar realizar o login.'); 
+      alert('Erro ao tentar realizar o login.');
 
-} 
+    }
 
-}); 
+  });
 
 
- // Cadastro - Validar e Salvar Novo Usuário 
+  // Cadastro - Validar e Salvar Novo Usuário 
 
- formSignup.addEventListener('submit', async (e) => { 
+  formSignup.addEventListener('submit', async (e) => {
 
-e.preventDefault(); 
+    e.preventDefault();
 
-const nome = document.getElementById('cadastroNome').value.trim(); 
+    const nome = document.getElementById('cadastroNome').value.trim();
 
-const email = document.getElementById('cadastroEmail').value.trim(); 
+    const email = document.getElementById('cadastroEmail').value.trim();
 
-const senha = document.getElementById('cadastroSenha').value.trim(); 
+    const senha = document.getElementById('cadastroSenha').value.trim();
 
-try { 
+    try {
 
-  const response = await fetch(`${apiUrl}/cadastrar`, { 
-    method: 'POST', 
+      const response = await fetch(`${apiUrl}/cadastrar`, {
+        method: 'POST',
 
-headers: { 'Content-Type': 'application/json' }, 
+        headers: { 'Content-Type': 'application/json' },
 
-body: JSON.stringify({ nome, email, senha }), 
+        body: JSON.stringify({ nome, email, senha }),
 
-}); 
+      });
 
-if (response.ok) { 
+      if (response.ok) {
 
-alert('Cadastro realizado com sucesso! Faça login para continuar.'); 
+        alert('Cadastro realizado com sucesso! Faça login para continuar.');
 
-formSignup.style.left = '450px'; 
+        formSignup.style.left = '450px';
 
-formSignin.style.left = '25px'; 
+        formSignin.style.left = '25px';
 
-btnColor.style.left = '0px'; 
+        btnColor.style.left = '0px';
 
-} else { 
+      } else {
 
-const error = await response.text(); 
+        const error = await response.text();
 
-alert(`Erro no cadastro: ${error}`); 
+        alert(`Erro no cadastro: ${error}`);
 
-} 
+      }
 
-} catch (error) { 
+    } catch (error) {
 
-console.error('Erro ao realizar cadastro:', error); 
+      console.error('Erro ao realizar cadastro:', error);
 
-alert('Erro ao tentar realizar o cadastro.'); 
+      alert('Erro ao tentar realizar o cadastro.');
 
-} 
+    }
 
-}); 
+  });
 
 
   // Logout - Limpar Sessão e Redirecionar 
 
-  document.getElementById('logout')?.addEventListener('click', () => { 
+  document.getElementById('logout')?.addEventListener('click', () => {
 
-sessionStorage.clear(); 
+    sessionStorage.clear();
 
-alert('Você saiu com sucesso.'); 
+    alert('Você saiu com sucesso.');
 
-window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login 
+    window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login 
 
-}); 
+  });
 
-</script> 
-
-
-
-</body> 
+</script>
 
 
 
-</html> 
+</body>
+
+
+
+</html>

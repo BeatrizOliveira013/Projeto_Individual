@@ -1,65 +1,54 @@
 // Configuração do ambiente
-var ambiente_processo = 'desenvolvimento'; 
-var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
-
-// Carrega as variáveis de ambiente do arquivo correto
-require("dotenv").config({ path: caminho_env });
+const dotenv = require("dotenv");
+const caminho_env = process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
+dotenv.config({ path: caminho_env });
 
 // Importação das dependências
-var express = require("express");
-var cors = require("cors");
-var path = require("path");
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
 // Definição da porta e do host a partir das variáveis de ambiente
-var PORTA_APP = process.env.APP_PORT || 3333;
-var HOST_APP = process.env.APP_HOST || 'localhost';
+const PORTA_APP = process.env.APP_PORT || 3333;
+const HOST_APP = process.env.APP_HOST || 'localhost';
 
-var app = express();
+const app = express();
 
-
-var feedRoutes = require("./src/routes/feed");
-
-var indexRouter = require("./src/routes/index");
-var usuarioRouter = require("./src/routes/usuario");
-//var avisosRouter = require("./src/routes/avisos")
-var dashboardRouter = require("./src/routes/dashboard");
-var cruzadinhaRoutes = require("./src/routes/cruzadinha");
-var memoriaRoutes = require("./src/routes/memoria");
-
+// Importação das rotas
+const feedRoutes = require("./src/routes/feed");
+const indexRouter = require("./src/routes/index");
+const usuarioRouter = require("./src/routes/usuario");
+const dashboardRouter = require("./src/routes/dashboard");
+const cruzadinhaRoutes = require("./src/routes/cruzadinha");
+const memoriaRoutes = require("./src/routes/memoria");
+const quizRouter = require("./src/routes/quiz"); // Rota do quiz foi adicionada
 
 // Configuração dos middlewares
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // Alterado de false para true para permitir objetos complexos
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // Configuração das rotas
-// Rotas
-app.use("/feed", feedRoutes); // Configurando as rotas de avisos
+app.use("/feed", feedRoutes); 
 app.use("/", indexRouter);
 app.use("/usuario", usuarioRouter);
-//app.use("/avisos", avisosRouter);
-app.use("/quiz-resultados", usuarioRouter); 
+app.use("/quiz", quizRouter); // Agora o quiz possui sua própria rota
 app.use("/dashboard", dashboardRouter);
 app.use("/cruzadinha", cruzadinhaRoutes);
 app.use("/memoria", memoriaRoutes);
 
-// Inicialização do servidor
-
-
-app.listen(PORTA_APP, function () {
-    console.log(`
-    ##   ##  ######   #####             ####       ##     ######     ##              ##  ##    ####    ######  
-    ##   ##  ##       ##  ##            ## ##     ####      ##      ####             ##  ##     ##         ##  
-    ##   ##  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##        ##   
-    ## # ##  ####     #####    ######   ##  ##   ######     ##     ######   ######   ##  ##     ##       ##    
-    #######  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##      ##     
-    ### ###  ##       ##  ##            ## ##    ##  ##     ##     ##  ##             ####      ##     ##      
-    ##   ##  ######   #####             ####     ##  ##     ##     ##  ##              ##      ####    ######  
-    \n\n\n                                                                                                 
-    Servidor do seu site já está rodando! Acesse o caminho a seguir para visualizar .: http://${HOST_APP}:${PORTA_APP} :. \n\n
-    Você está rodando sua aplicação em ambiente de .:${process.env.AMBIENTE_PROCESSO}:. \n\n
-    \tSe .:desenvolvimento:. você está se conectando ao banco local. \n
-    \tSe .:producao:. você está se conectando ao banco remoto. \n\n
-    \t\tPara alterar o ambiente, comente ou descomente as linhas 1 ou 2 no arquivo 'app.js'\n\n`);
-});
+// Inicialização do servidor com try/catch para capturar erros de inicialização
+try {
+    app.listen(PORTA_APP, () => {
+        console.log(`
+-------------------------------------------------------
+🚀 Servidor rodando em: http://${HOST_APP}:${PORTA_APP}
+🌐 Ambiente atual: ${process.env.AMBIENTE_PROCESSO || 'desenvolvimento'}
+📦 Banco de dados: ${process.env.NODE_ENV === 'production' ? 'Remoto' : 'Local'}
+-------------------------------------------------------
+        `);
+    });
+} catch (error) {
+    console.error("Erro ao iniciar o servidor:", error);
+}

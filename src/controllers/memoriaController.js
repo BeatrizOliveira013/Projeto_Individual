@@ -30,3 +30,44 @@ module.exports = {
     salvarTempo,
     obterTopTempos,
 };
+
+
+
+const usuarioModel = require("../models/usuarioModel");
+
+async function salvarResultadoMemoria(req, res) {
+    try {
+        const { usuario_id, tempo } = req.body;
+
+        if (!usuario_id || !tempo) {
+            return res.status(400).json({ message: "Dados insuficientes para salvar resultado do jogo da memória." });
+        }
+
+        await usuarioModel.salvarResultadoMemoria(usuario_id, tempo);
+        return res.status(201).json({ message: "Resultado do jogo da memória salvo com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao salvar resultado do jogo da memória:", error);
+        return res.status(500).json({ message: "Erro ao salvar resultado do jogo da memória." });
+    }
+}
+
+async function obterResultadosMemoria(req, res) {
+    try {
+        const { usuario_id } = req.params;
+
+        if (!usuario_id) {
+            return res.status(400).json({ message: "ID do usuário não fornecido." });
+        }
+
+        const resultados = await usuarioModel.obterResultadosMemoria(usuario_id);
+        return res.status(200).json(resultados);
+    } catch (error) {
+        console.error("Erro ao obter resultados do jogo da memória:", error);
+        return res.status(500).json({ message: "Erro ao obter resultados do jogo da memória." });
+    }
+}
+
+module.exports = {
+    salvarResultadoMemoria,
+    obterResultadosMemoria
+};
