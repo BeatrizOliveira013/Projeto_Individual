@@ -20,10 +20,11 @@ var app = express();
 var feedRoutes = require("./routes/feedRoutes"); // Importando as rotas de avisos
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
-//var avisosRouter = require("./src/routes/avisos");
-//var medidasRouter = require("./src/routes/medidas");
-//var aquariosRouter = require("./src/routes/aquarios");
-var empresasRouter = require("./src/routes/empresas");
+//var avisosRouter = require("./src/routes/avisos")
+var dashboardRouter = require("./src/routes/dashboard");
+var cruzadinhaRoutes = require("./src/routes/cruzadinha");
+var memoriaRoutes = require("./src/routes/memoria");
+
 
 // Configuração dos middlewares
 app.use(express.json());
@@ -37,9 +38,10 @@ app.use("/feed", feedRoutes); // Configurando as rotas de avisos
 app.use("/", indexRouter);
 app.use("/usuario", usuarioRouter);
 //app.use("/avisos", avisosRouter);
-//app.use("/medidas", medidasRouter);
-//app.use("/aquarios", aquariosRouter);
-app.use("/empresas", empresasRouter);
+app.use("/quiz-resultados", usuarioRouter); 
+app.use("/dashboard", dashboardRouter);
+app.use("/cruzadinha", cruzadinhaRoutes);
+app.use("/memoria", memoriaRoutes);
 
 // Inicialização do servidor
 
