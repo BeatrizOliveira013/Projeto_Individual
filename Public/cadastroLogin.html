@@ -15,7 +15,7 @@
   <title>Login e Cadastro</title> 
 
   <script src="https://kit.fontawesome.com/cf6fa412bd.js" crossorigin="anonymous"></script> 
-
+  <link rel="stylesheet" href="css/loginCadastro.css">
 
 
 </head> 
@@ -116,7 +116,7 @@
 
 <script> 
 
-  const apiUrl = 'http://localhost:3333/usuarios'; 
+  const apiUrl = 'http://localhost:3333/usuario'; 
 
  
 
@@ -258,7 +258,7 @@ alert('Erro ao tentar realizar o cadastro.');
 
   document.getElementById('logout')?.addEventListener('click', () => { 
 
-sessionStorage.clear(); // Limpa os dados da sessão 
+sessionStorage.clear(); 
 
 alert('Você saiu com sucesso.'); 
 
