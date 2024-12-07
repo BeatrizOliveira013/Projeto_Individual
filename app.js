@@ -1,31 +1,33 @@
-// Configuração do ambiente
-var ambiente_processo = 'desenvolvimento'; 
-var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
+// Configuração do dotenv
+const dotenv = require("dotenv");
 
-// Carrega as variáveis de ambiente do arquivo correto
-require("dotenv").config({ path: caminho_env });
+// Carregamento das variáveis de ambiente do arquivo .env ou .env.dev
+const caminho_env = process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
+dotenv.config({ path: caminho_env });
 
-// Importação das dependências
-var express = require("express");
-var cors = require("cors");
-var path = require("path");
+// Verificação se a variável AMBIENTE foi carregada corretamente
+if (!process.env.AMBIENTE) {
+    console.error("O AMBIENTE (produção OU desenvolvimento) NÃO FOI DEFINIDO EM .env OU dev.env OU app.js");
+    process.exit(1); // Finaliza a execução se a variável não for encontrada
+}
 
-// Definição da porta e do host a partir das variáveis de ambiente
-var PORTA_APP = process.env.APP_PORT || 3333;
-var HOST_APP = process.env.APP_HOST || 'localhost';
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
-var app = express();
+const PORTA_APP = process.env.APP_PORT || 3333;
+const HOST_APP = process.env.APP_HOST || 'localhost';
 
-// Importação de rotas
-const feedRoutes = require("./src/routes/feed");
+const app = express();
+
 const indexRouter = require("./src/routes/index");
 const usuarioRouter = require("./src/routes/usuario");
+const quizRouter = require("./src/routes/quiz");
 const dashboardRouter = require("./src/routes/dashboard");
 const cruzadinhaRoutes = require("./src/routes/cruzadinha");
 const memoriaRoutes = require("./src/routes/memoria");
-const quizRouter = require("./src/routes/quiz"); // Rota do quiz foi adicionada
+const feedRoutes = require("./src/routes/feed");
 
-// Configuração dos middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.static(path.join(__dirname, "public")));
@@ -33,18 +35,14 @@ app.use(cors());
 
 // Configuração das rotas
 app.use("/", indexRouter);
-app.use("/feed", feedRoutes);
 app.use("/usuario", usuarioRouter);
-app.use("/quiz", quizRouter); 
+app.use("/quiz", quizRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/cruzadinha", cruzadinhaRoutes);
 app.use("/memoria", memoriaRoutes);
+app.use("/feed", feedRoutes);
 
 // Inicialização do servidor
 app.listen(PORTA_APP, function () {
-    console.log(`
-    Servidor do seu site já está rodando! Acesse o caminho a seguir para visualizar .: http://${HOST_APP}:${PORTA_APP} :.
-    Você está rodando sua aplicação em ambiente de .:${process.env.AMBIENTE_PROCESSO}:.
-    Para alterar o ambiente, comente ou descomente as linhas 1 ou 2 no arquivo 'app.js'
-    `);
+    console.log(`Servidor rodando em: http://${HOST_APP}:${PORTA_APP}`);
 });
