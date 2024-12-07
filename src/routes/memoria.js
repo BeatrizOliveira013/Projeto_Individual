@@ -1,18 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const memoriaController = require("../controllers/memoriaController");
+const memoriaController = require("../controllers/memoriaController"); // Corrigido: agora está usando memoriaController
 
-// Rota para salvar tempo do jogador
-router.post("/salvar", memoriaController.salvarTempo);
+// Rota para salvar o tempo do jogador no jogo da memória
+router.post("/salvar", memoriaController.salvarResultadoMemoria);
 
-// Rota para obter os 5 melhores tempos
+// Rota para obter os 5 melhores tempos no jogo da memória
 router.get("/top", memoriaController.obterTopTempos);
 
+// Rota para salvar o resultado do jogo da memória
+router.post("/game-resultados", memoriaController.salvarResultadoMemoria);
+
+// Rota para obter os resultados do jogo da memória para um usuário específico
+router.get("/game-resultados/:usuario_id", memoriaController.obterResultadosMemoria);
+
 module.exports = router;
-
-
-
-
-// Resultados do Jogo da Memória
-router.post("/game-resultados", usuarioController.salvarResultadoMemoria);
-router.get("/game-resultados/:usuario_id", usuarioController.obterResultadosMemoria);
