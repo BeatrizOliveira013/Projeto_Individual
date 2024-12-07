@@ -1,11 +1,11 @@
 const database = require("../database/config");
 
+// Listar todas as postagens
 function listar() {
     const instrucao = `
         SELECT 
-            feed_posts.id AS idAviso, 
-            feed_posts.titulo, 
-            feed_posts.descricao, 
+            feed_posts.id AS idPostagem, 
+            feed_posts.texto AS descricao, 
             feed_posts.data_postagem, 
             usuario.nome AS autor
         FROM feed_posts
@@ -15,12 +15,12 @@ function listar() {
     return database.executar(instrucao);
 }
 
+// Listar postagens de um usuário específico
 function listarPorUsuario(idUsuario) {
     const instrucao = `
         SELECT 
-            feed_posts.id AS idAviso, 
-            feed_posts.titulo, 
-            feed_posts.descricao, 
+            feed_posts.id AS idPostagem, 
+            feed_posts.texto AS descricao, 
             feed_posts.data_postagem
         FROM feed_posts
         WHERE usuario_id = ${idUsuario}
@@ -29,30 +29,30 @@ function listarPorUsuario(idUsuario) {
     return database.executar(instrucao);
 }
 
-function publicar(titulo, descricao, idUsuario) {
+// Publicar uma nova postagem
+function publicar(texto, idUsuario) {
     const instrucao = `
-        INSERT INTO feed_posts (titulo, descricao, usuario_id) 
-        VALUES ('${titulo}', '${descricao}', ${idUsuario});
+        INSERT INTO feed_posts (texto, usuario_id, data_postagem) 
+        VALUES ('${texto}', ${idUsuario}, NOW());
     `;
     return database.executar(instrucao);
 }
 
-function editar(titulo, descricao, idAviso) {
+// Editar uma postagem existente
+function editar(texto, idPostagem) {
     const instrucao = `
         UPDATE feed_posts 
-        SET 
-            titulo = '${titulo}', 
-            descricao = '${descricao}' 
-        WHERE id = ${idAviso};
+        SET texto = '${texto}' 
+        WHERE id = ${idPostagem};
     `;
     return database.executar(instrucao);
 }
 
-
-function deletar(idAviso) {
+// Deletar uma postagem
+function deletar(idPostagem) {
     const instrucao = `
         DELETE FROM feed_posts 
-        WHERE id = ${idAviso};
+        WHERE id = ${idPostagem};
     `;
     return database.executar(instrucao);
 }
@@ -62,5 +62,5 @@ module.exports = {
     listarPorUsuario,
     publicar,
     editar,
-    deletar
+    deletar,
 };

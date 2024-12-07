@@ -1,7 +1,8 @@
-const avisoModel = require("../models/avisoModel");
+const feedModel = require("../models/feedModel");
 
+// Listar todas as postagens
 function listar(req, res) {
-    avisoModel
+    feedModel
         .listar()
         .then((resultado) => {
             if (resultado.length > 0) {
@@ -16,10 +17,16 @@ function listar(req, res) {
         });
 }
 
+// Listar postagens de um usuário específico
 function listarPorUsuario(req, res) {
     const idUsuario = req.params.idUsuario;
 
-    avisoModel
+    if (!idUsuario) {
+        res.status(400).json({ erro: "ID do usuário não fornecido." });
+        return;
+    }
+
+    feedModel
         .listarPorUsuario(idUsuario)
         .then((resultado) => {
             if (resultado.length > 0) {
@@ -34,19 +41,20 @@ function listarPorUsuario(req, res) {
         });
 }
 
+// Publicar uma nova postagem
 function publicar(req, res) {
-    const { titulo, descricao } = req.body;
+    const { texto } = req.body;
     const idUsuario = req.params.idUsuario;
 
-    if (!titulo || !descricao || !idUsuario) {
+    if (!texto || !idUsuario) {
         res.status(400).json({ erro: "Dados incompletos para publicação." });
         return;
     }
 
-    avisoModel
-        .publicar(titulo, descricao, idUsuario)
-        .then((resultado) => {
-            res.status(201).json({ mensagem: "Postagem publicada com sucesso!", resultado });
+    feedModel
+        .publicar(texto, idUsuario)
+        .then(() => {
+            res.status(201).json({ mensagem: "Postagem publicada com sucesso!" });
         })
         .catch((erro) => {
             console.error("Erro ao publicar postagem:", erro.sqlMessage || erro);
@@ -54,38 +62,20 @@ function publicar(req, res) {
         });
 }
 
+// Editar uma postagem existente
 function editar(req, res) {
-    const idAviso = req.params.idAviso;
-    const { descricao } = req.body;
+    const idPostagem = req.params.idPostagem;
+    const { texto } = req.body;
 
-    if (!descricao || !idAviso) {
-        res.status(400).json({ erro: "Dados incompletos para edição." });
-        return;
-    }
-
-    avisoModel
-        .editar(descricao, idAviso)
-        .then((resultado) => {
-            res.status(200).json({ mensagem: "Postagem editada com sucesso!", resultado });
-        })
-        .catch((erro) => {
-            console.error("Erro ao editar postagem:", erro.sqlMessage || erro);
-            res.status(500).json({ erro: "Erro ao editar postagem." });
-        });
-}
-function editar(req, res) {
-    const idAviso = req.params.idAviso;
-    const { titulo, descricao } = req.body;
-
-    if (!titulo || !descricao || !idAviso) {
+    if (!texto || !idPostagem) {
         res.status(400).json({ erro: "Dados incompletos para edição." });
         return;
     }
 
     feedModel
-        .editar(titulo, descricao, idAviso)
-        .then((resultado) => {
-            res.status(200).json({ mensagem: "Postagem editada com sucesso!", resultado });
+        .editar(texto, idPostagem)
+        .then(() => {
+            res.status(200).json({ mensagem: "Postagem editada com sucesso!" });
         })
         .catch((erro) => {
             console.error("Erro ao editar postagem:", erro.sqlMessage || erro);
@@ -93,20 +83,19 @@ function editar(req, res) {
         });
 }
 
-
-
+// Deletar uma postagem
 function deletar(req, res) {
-    const idAviso = req.params.idAviso;
+    const idPostagem = req.params.idPostagem;
 
-    if (!idAviso) {
+    if (!idPostagem) {
         res.status(400).json({ erro: "ID da postagem não fornecido para exclusão." });
         return;
     }
 
-    avisoModel
-        .deletar(idAviso)
-        .then((resultado) => {
-            res.status(200).json({ mensagem: "Postagem deletada com sucesso!", resultado });
+    feedModel
+        .deletar(idPostagem)
+        .then(() => {
+            res.status(200).json({ mensagem: "Postagem deletada com sucesso!" });
         })
         .catch((erro) => {
             console.error("Erro ao deletar postagem:", erro.sqlMessage || erro);

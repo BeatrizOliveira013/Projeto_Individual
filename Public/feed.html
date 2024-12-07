@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="./../css/feed.css">
     <link rel="stylesheet" href="./../css/estilo.css">
     <script src="../js/feed.js"></script>
-
+    <link rel="stylesheet" href="/css/estilo.css">
+    <script src="/js/feed.js"></script>
+    <link rel="shortcut icon" href="/assets/icon/pubg.ico" type="image/x-icon">
+    
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -35,10 +38,6 @@
             <section class="postar">
                 <h2>Compartilhe sua experiência</h2>
                 <form id="form_postagem" onsubmit="return publicar()">
-                    <label>
-                        Título:
-                        <input name="titulo" id="titulo" type="text" maxlength="100" required>
-                    </label>
                     <label>
                         Conteúdo:
                         <textarea name="descricao" id="descricao" maxlength="500" rows="4" required></textarea>
@@ -71,18 +70,17 @@ function limparFormulario() {
 
 function publicar() {
     const idUsuario = sessionStorage.getItem("ID_USUARIO");
-    const titulo = document.getElementById("titulo").value;
     const descricao = document.getElementById("descricao").value;
 
-    if (!titulo || !descricao) {
-        alert("Preencha todos os campos antes de publicar!");
+    if (!descricao || !idUsuario) {
+        alert("Preencha o campo antes de publicar!");
         return false;
     }
 
-    fetch(`/avisos/publicar/${idUsuario}`, {
+    fetch(`/feed/publicar/${idUsuario}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titulo, descricao })
+        body: JSON.stringify({ texto: descricao }) // Campo ajustado
     })
         .then((resposta) => {
             if (resposta.ok) {
@@ -99,13 +97,13 @@ function publicar() {
 }
 
 function editar(idPostagem) {
-    const novaDescricao = prompt("Digite a nova descrição:");
+    const novaDescricao = prompt("Digite o novo conteúdo da postagem:");
     if (!novaDescricao) return;
 
-    fetch(`/avisos/editar/${idPostagem}`, {
+    fetch(`/feed/editar/${idPostagem}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ descricao: novaDescricao })
+        body: JSON.stringify({ texto: novaDescricao }) // Campo ajustado
     })
         .then((resposta) => {
             if (resposta.ok) {
@@ -121,7 +119,7 @@ function editar(idPostagem) {
 function deletar(idPostagem) {
     if (!confirm("Tem certeza que deseja excluir esta postagem?")) return;
 
-    fetch(`/avisos/deletar/${idPostagem}`, {
+    fetch(`/feed/deletar/${idPostagem}`, {
         method: "DELETE"
     })
         .then((resposta) => {
@@ -139,7 +137,7 @@ function atualizarFeed() {
     const feedContainer = document.getElementById("feed_container");
     feedContainer.innerHTML = "<p>Carregando postagens...</p>";
 
-    fetch("/avisos/listar")
+    fetch("/feed/listar")
         .then((resposta) => {
             if (resposta.ok) {
                 return resposta.json();
@@ -158,18 +156,26 @@ function atualizarFeed() {
                 postagemElement.classList.add("postagem");
 
                 postagemElement.innerHTML = `
-                    <span>ID: ${postagem.idAviso}</span>
-                    <span>Título: ${postagem.titulo}</span>
-                    <span>Autor: ${postagem.nome}</span>
+                    <span>ID: ${postagem.idPostagem}</span>
+                    <span>Autor: ${postagem.autor}</span>
                     <p>${postagem.descricao}</p>
-                    <button onclick="editar(${postagem.idAviso})">Editar</button>
-                    <button onclick="deletar(${postagem.idAviso})">Deletar</button>
+                    <button onclick="editar(${postagem.idPostagem})">Editar</button>
+                    <button onclick="deletar(${postagem.idPostagem})">Deletar</button>
                 `;
 
                 feedContainer.appendChild(postagemElement);
             });
         })
         .catch((erro) => console.error("Erro ao atualizar o feed:", erro));
+}
+
+
+function validarSessao() {
+    const usuario = sessionStorage.getItem("ID_USUARIO");
+    if (!usuario) {
+        alert("Sessão não encontrada! Redirecionando para login.");
+        window.location.href = "/login.html";
+    }
 }
 
 </script>

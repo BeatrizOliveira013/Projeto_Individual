@@ -16,10 +16,11 @@ var HOST_APP = process.env.APP_HOST || 'localhost';
 
 var app = express();
 
-// Importação das rotas
-var feedRoutes = require("./routes/feedRoutes"); // Importando as rotas de avisos
+
+var feedRoutes = require("./src/routes/feed");
+
 var indexRouter = require("./src/routes/index");
-var usuarioRouter = require("./src/routes/usuarios");
+var usuarioRouter = require("./src/routes/usuario");
 //var avisosRouter = require("./src/routes/avisos")
 var dashboardRouter = require("./src/routes/dashboard");
 var cruzadinhaRoutes = require("./src/routes/cruzadinha");
