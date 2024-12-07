@@ -1,6 +1,7 @@
+
 const express = require("express");
 const router = express.Router();
-const usuarioController = require("../controllers/usuarioController"); // Agora está importando o controller corretamente
+const usuarioController = require("../controllers/usuarioController"); // Certifique-se de que o caminho está correto
 
 // Rota para salvar o resultado do quiz
 router.post("/quiz-resultados", usuarioController.salvarResultadoQuiz);

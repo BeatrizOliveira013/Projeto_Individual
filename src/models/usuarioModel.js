@@ -1,30 +1,77 @@
-const bcrypt = require('bcryptjs');
+const database = require("../database/config");
 
-async function cadastrar(nome, email, senha) {
-    const hash = await bcrypt.hash(senha, 10); // 10 é o fator de custo
+function autenticar(email, senha) {
+    const query = `
+        SELECT id, nome, email 
+        FROM usuario 
+        WHERE email = ? AND senha = ?;
+    `;
+    return database.executar(query, [email, senha]);
+}
+
+function cadastrar(nome, email, senha) {
     const query = `
         INSERT INTO usuario (nome, email, senha) 
         VALUES (?, ?, ?);
     `;
-    return database.executar(query, [nome, email, hash]);
+    return database.executar(query, [nome, email, senha]);
 }
 
-async function autenticar(email, senha) {
+function salvarResultadoQuiz(usuario_id, perfil) {
+    console.log("Acessando o model para salvar resultado do quiz:", usuario_id, perfil);
+
     const query = `
-        SELECT id, nome, email, senha 
-        FROM usuario 
-        WHERE email = ?;
+        INSERT INTO quiz_resultados (usuario_id, perfil, data_quiz) 
+        VALUES (?, ?, NOW());
     `;
-    const usuarios = await database.executar(query, [email]);
-    if (usuarios.length === 0) {
-        throw new Error("Usuário não encontrado.");
-    }
 
-    const usuario = usuarios[0];
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaValida) {
-        throw new Error("Senha incorreta.");
-    }
-
-    return usuario;
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id, perfil]);
 }
+
+function salvarResultadoMemoria(usuario_id, tempo) {
+    console.log("Acessando o model para salvar resultado do jogo da memória:", usuario_id, tempo);
+
+    const query = `
+        INSERT INTO memoria_resultados (usuario_id, tempo, data_jogo) 
+        VALUES (?, ?, NOW());
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id, tempo]);
+}
+
+function obterResultadosQuiz(usuario_id) {
+    console.log("Acessando o model para obter resultados do quiz:", usuario_id);
+
+    const query = `
+        SELECT perfil, DATE_FORMAT(data_quiz, '%d/%m/%Y %H:%i') AS data 
+        FROM quiz_resultados 
+        WHERE usuario_id = ?;
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id]);
+}
+
+function obterResultadosMemoria(usuario_id) {
+    console.log("Acessando o model para obter resultados do jogo da memória:", usuario_id);
+
+    const query = `
+        SELECT tempo, DATE_FORMAT(data_jogo, '%d/%m/%Y %H:%i') AS data 
+        FROM memoria_resultados 
+        WHERE usuario_id = ?;
+    `;
+
+    console.log("Executando SQL: \n" + query);
+    return database.executar(query, [usuario_id]);
+}
+
+module.exports = {
+    autenticar,
+    cadastrar,
+    salvarResultadoQuiz,
+    salvarResultadoMemoria,
+    obterResultadosQuiz,
+    obterResultadosMemoria
+};
