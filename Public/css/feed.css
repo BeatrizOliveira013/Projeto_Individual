@@ -85,3 +85,57 @@ body {
     background-color: #2c2c34;
     color: #fff;
 }
+
+
+.postar form button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: #1a1a1d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.postar form button:hover {
+    background-color: #ff5722;
+}
+
+.feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.postagem {
+    padding: 15px;
+    background-color: #2c2c34;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.postagem span {
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.postagem p {
+    margin: 10px 0 0 0;
+    color: #ddd;
+}
+
+.postagem button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #1a1a1d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.postagem button:hover {
+    background-color: #ff5722;
+}
