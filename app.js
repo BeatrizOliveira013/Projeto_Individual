@@ -14,23 +14,11 @@ if (!process.env.AMBIENTE_PROCESSO) {
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const multer = require('multer'); // Importa multer para fazer o upload de arquivos
 
 const PORTA_APP = process.env.APP_PORT || 3333;
 const HOST_APP = process.env.APP_HOST || 'localhost';
 
 const app = express();
-
-// Configuração de armazenamento de imagens usando multer
-const storage = multer.diskStorage({
-  destination: './public/assets', // Define o local de armazenamento das imagens
-  filename: (req, file, cb) => {
-    const nomeArquivo = `${Date.now()}-${file.originalname}`;
-    cb(null, nomeArquivo);
-  }
-});
-
-const upload = multer({ storage }); // Configuração final do multer
 
 // Middleware
 app.use(express.json());
@@ -38,11 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-
-
 // Importação das rotas
 const indexRouter = require("./src/routes/index");
-const usuarioRouter = require("./src/routes/usuario");
+const usuarioRouter = require("./src/routes/usuario"); // Mantém o usuarioRouter para lidar com o cadastro de imagens
 const quizRouter = require("./src/routes/quiz");
 const dashboardRouter = require("./src/routes/dashboard");
 const cruzadinhaRoutes = require("./src/routes/cruzadinha");
@@ -51,46 +37,12 @@ const feedRoutes = require("./src/routes/feed");
 
 // Configuração das rotas
 app.use("/", indexRouter);
-app.use("/usuario", usuarioRouter);
+app.use("/usuario", usuarioRouter); // Aqui está a lógica de cadastro de usuário com upload de imagem
 app.use("/quiz", quizRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/cruzadinha", cruzadinhaRoutes);
 app.use("/memoria", memoriaRoutes);
 app.use("/feed", feedRoutes);
-
-// Rota de cadastro de usuário com imagem
-app.post('/usuarios/cadastro', upload.single('foto'), (req, res) => {
-    try {
-        const { nome, email, senha } = req.body;
-        const imagem_perfil = req.file ? req.file.filename : null; // Pega o nome do arquivo gerado pelo multer
-
-        if (!nome || !email || !senha) {
-            return res.status(400).json({ mensagem: 'Nome, e-mail e senha são obrigatórios.' });
-        }
-
-        // Simulação de armazenamento no banco de dados
-        const usuario = { 
-            id: Date.now(), 
-            nome, 
-            email, 
-            senha, 
-            imagem_perfil: imagem_perfil ? `/assets/${imagem_perfil}` : null // Define o caminho da imagem
-        };
-
-        // Exemplo fictício de salvamento (substitua pelo banco real)
-        console.log("Usuário salvo:", usuario);
-
-        res.status(201).json({
-            mensagem: 'Usuário cadastrado com sucesso!',
-            usuario
-        });
-    } catch (error) {
-        console.error('Erro ao cadastrar usuário:', error);
-        res.status(500).json({ mensagem: 'Erro ao cadastrar o usuário.' });
-    }
-});
-
-
 
 // Tratamento de erro de rota não encontrada
 app.use((req, res, next) => {

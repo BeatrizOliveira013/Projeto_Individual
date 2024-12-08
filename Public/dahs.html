@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard PUBG</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #dashboard {
+            width: 80%;
+            max-width: 900px;
+        }
+
+        .chart-wrapper {
+            background-color: #1a1a1a;
+            border: 2px solid #f39c12;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+            background-color: #fff; /* Para garantir que o gráfico não fique invisível */
+        }
+    </style>
+</head>
+
+<body>
+
+    <main id="dashboard">
+        <div class="chart-wrapper">
+            <h3>Melhor Tempo dos Jogadores</h3>
+            <canvas id="melhorTempoChart"></canvas>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = sessionStorage.getItem('ID_USUARIO');
+            const userName = sessionStorage.getItem('NOME_USUARIO');
+
+            if (!userId || !userName) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.href = 'cadastroLogin.html';
+                return;
+            }
+
+            // Exemplo de dados que podem vir de uma API (substitua com o seu fetch)
+            const data = {
+                memoria: [
+                    { usuario_id: 1, tempo_minimo: 35, nome: "Jogador 1", foto: "https://via.placeholder.com/50x50" },
+                    { usuario_id: 2, tempo_minimo: 40, nome: "Jogador 2", foto: "https://via.placeholder.com/50x50" },
+                    { usuario_id: 3, tempo_minimo: 25, nome: "Jogador 3", foto: "https://via.placeholder.com/50x50" },
+                    { usuario_id: 4, tempo_minimo: 60, nome: "Jogador 4", foto: "https://via.placeholder.com/50x50" },
+                    { usuario_id: 5, tempo_minimo: 20, nome: "Jogador 5", foto: "https://via.placeholder.com/50x50" }
+                ]
+            };
+
+            const ctx = document.getElementById('melhorTempoChart').getContext('2d');
+
+            // Pegando os dados para o gráfico
+            const labels = data.memoria.map(player => player.nome);
+            const tempos = data.memoria.map(player => player.tempo_minimo);
+            const fotos = data.memoria.map(player => player.foto);
+
+            // Configurando o gráfico
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tempo (s)',
+                        data: tempos,
+                        backgroundColor: '#f39c12',
+                        borderColor: '#e67e22',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Horizontal
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'white' }
+                        },
+                        y: {
+                            ticks: { color: 'white' }
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'imagePlugin',
+                    afterDraw: (chart) => {
+                        const ctx = chart.ctx;
+                        const yAxis = chart.scales.y;
+                        const xAxis = chart.scales.x;
+
+                        fotos.forEach((fotoUrl, index) => {
+                            const x = xAxis.left - 40; // Posição no eixo x (ajustar conforme necessidade)
+                            const y = yAxis.getPixelForValue(labels[index]) - 20; // Posição no eixo y
+                            const image = new Image();
+                            image.src = fotoUrl;
+
+                            image.onload = function () {
+                                ctx.save();
+                                ctx.beginPath();
+                                ctx.arc(x + 20, y + 20, 20, 0, 2 * Math.PI);
+                                ctx.closePath();
+                                ctx.clip();
+                                ctx.drawImage(image, x, y, 40, 40);
+                                ctx.restore();
+                            };
+                        });
+                    }
+                }]
+            });
+        });
+    </script>
+
+</body>
+
+</html>

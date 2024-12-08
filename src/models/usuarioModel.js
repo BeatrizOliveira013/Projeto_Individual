@@ -9,14 +9,6 @@ function autenticar(email, senha) {
     return database.executar(query);
 }
 
-function cadastrar(nome, email, senha) {
-    const query = `
-        INSERT INTO usuario (nome, email, senha) 
-        VALUES ('${nome}', '${email}', '${senha}');
-    `;
-    return database.executar(query);
-}
-
 function cadastrarComImagem(nome, email, senha, imagem_perfil) {
     const query = `
         INSERT INTO usuario (nome, email, senha, imagem_perfil) 
@@ -27,6 +19,5 @@ function cadastrarComImagem(nome, email, senha, imagem_perfil) {
 
 module.exports = {
     autenticar,
-    cadastrar,
     cadastrarComImagem
 };
