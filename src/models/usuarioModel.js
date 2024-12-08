@@ -2,7 +2,7 @@ const database = require("../database/config");
 
 function autenticar(email, senha) {
     const query = `
-        SELECT id, nome, email 
+        SELECT id, nome, email, imagem_perfil 
         FROM usuario 
         WHERE email = '${email}' AND senha = '${senha}';
     `;
@@ -17,7 +17,16 @@ function cadastrar(nome, email, senha) {
     return database.executar(query);
 }
 
+function cadastrarComImagem(nome, email, senha, imagem_perfil) {
+    const query = `
+        INSERT INTO usuario (nome, email, senha, imagem_perfil) 
+        VALUES ('${nome}', '${email}', '${senha}', '${imagem_perfil}');
+    `;
+    return database.executar(query);
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    cadastrarComImagem
 };

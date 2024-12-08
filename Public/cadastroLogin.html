@@ -1,277 +1,153 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
-
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Login e Cadastro</title>
-
   <script src="https://kit.fontawesome.com/cf6fa412bd.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/loginCadastro.css">
-
-
 </head>
 
 <body>
-
   <!-- Navbar -->
-
   <nav>
-
     <a href="index.html" class="logo">PUBG FÃS</a>
-
     <ul>
-
       <li><a href="index.html">Home</a></li>
-
       <li><a href="cadastroLogin.html">Login</a></li>
-
       <li><a href="cadastroLogin.html">Cadastro</a></li>
-
       <li><a href="game.html">Jogo da Memória</a></li>
-
       <li><a href="cruzadinha.html">Cruzadinha</a></li>
-
       <li><a href="quiz.html">Quiz</a></li>
-
       <li><a href="dashboard.html">Dashboard</a></li>
-
     </ul>
-
   </nav>
 
-
-
   <!-- Form Container -->
-
   <div class="container">
-
     <div class="buttonsForm">
-
       <div class="btnColor"></div>
-
       <button id="btnSignin">Entrar</button>
-
       <button id="btnSignup">Cadastrar</button>
-
     </div>
 
     <!-- Login -->
-
     <form id="signin">
-
       <input type="email" id="loginEmail" placeholder="E-mail" required />
-
       <i class="fas fa-envelope iEmail"></i>
 
       <input type="password" id="loginSenha" placeholder="Senha" required />
-
       <i class="fas fa-lock iPassword"></i>
 
       <button type="submit">Entrar</button>
-
     </form>
-
-
 
     <!-- Cadastro -->
-
-    <form id="signup">
-
+    <form id="signup" enctype="multipart/form-data">
       <input type="text" id="cadastroNome" placeholder="Nome" required />
-
       <input type="email" id="cadastroEmail" placeholder="E-mail" required />
-
       <input type="password" id="cadastroSenha" placeholder="Senha" required />
-
-      <i class="fas fa-lock iPassword"></i>
-
+      <input type="file" id="cadastroFoto" accept="image/*" required />
       <button type="submit">Cadastrar</button>
-
     </form>
-
   </div>
 
+  <script>
+    const apiUrl = 'http://localhost:3333/usuario';
 
+    // Alternar entre login e cadastro 
+    const formSignin = document.getElementById('signin');
+    const formSignup = document.getElementById('signup');
+    const btnColor = document.querySelector('.btnColor');
 
+    document.getElementById('btnSignin').addEventListener('click', () => {
+      formSignin.style.left = '25px';
+      formSignup.style.left = '450px';
+      btnColor.style.left = '0px';
+    });
 
+    document.getElementById('btnSignup').addEventListener('click', () => {
+      formSignin.style.left = '-450px';
+      formSignup.style.left = '25px';
+      btnColor.style.left = '110px';
+    });
 
+    // Login - Validar e Salvar Sessão 
+    formSignin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginSenha').value.trim();
+
+      try {
+        const response = await fetch(`${apiUrl}/autenticar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha }),
+        });
+
+        if (response.ok) {
+          const usuario = await response.json();
+          sessionStorage.setItem('ID_USUARIO', usuario.id);
+          sessionStorage.setItem('NOME_USUARIO', usuario.nome);
+          sessionStorage.setItem('EMAIL_USUARIO', usuario.email);
+          sessionStorage.setItem('IMAGEM_PERFIL', usuario.imagem_perfil);
+          alert(`Bem-vindo, ${usuario.nome}!`);
+          window.location.href = 'dashboard.html'; 
+        } else {
+          alert('Credenciais inválidas.');
+        }
+      } catch (error) {
+        console.error('Erro ao autenticar:', error);
+        alert('Erro ao tentar realizar o login.');
+      }
+    });
+
+    // Cadastro - Validar e Salvar Novo Usuário 
+    formSignup.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById('cadastroNome').value.trim();
+      const email = document.getElementById('cadastroEmail').value.trim();
+      const senha = document.getElementById('cadastroSenha').value.trim();
+      const foto = document.getElementById('cadastroFoto').files[0];
+
+      const formData = new FormData();
+      formData.append('nome', nome);
+      formData.append('email', email);
+      formData.append('senha', senha);
+      formData.append('foto', foto);
+
+      try {
+        const response = await fetch(`${apiUrl}/cadastrar`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert('Cadastro realizado com sucesso! Faça login para continuar.');
+          formSignup.style.left = '450px';
+          formSignin.style.left = '25px';
+          btnColor.style.left = '0px';
+        } else {
+          const error = await response.text();
+          alert(`Erro no cadastro: ${error}`);
+        }
+      } catch (error) {
+        console.error('Erro ao realizar cadastro:', error);
+        alert('Erro ao tentar realizar o cadastro.');
+      }
+    });
+
+    // Logout - Limpar Sessão e Redirecionar 
+    document.getElementById('logout')?.addEventListener('click', () => {
+      sessionStorage.clear();
+      alert('Você saiu com sucesso.');
+      window.location.href = 'cadastroLogin.html'; 
+    });
+  </script>
 </body>
-
-
-
 </html>
 
 
 
-
-
-<script>
-
-  const apiUrl = 'http://localhost:3333/usuario';
-
-
-
-  // Alternar entre login e cadastro 
-
-  const formSignin = document.getElementById('signin');
-
-
-  const formSignup = document.getElementById('signup');
-
-  const btnColor = document.querySelector('.btnColor');
-
-  document.getElementById('btnSignin').addEventListener('click', () => {
-
-    formSignin.style.left = '25px';
-
-    formSignup.style.left = '450px';
-
-    btnColor.style.left = '0px';
-
-  });
-
-  document.getElementById('btnSignup').addEventListener('click', () => {
-
-    formSignin.style.left = '-450px';
-
-    formSignup.style.left = '25px';
-
-    btnColor.style.left = '110px';
-
-  });
-
-  // Login - Validar e Salvar Sessão 
-
-  formSignin.addEventListener('submit', async (e) => {
-
-    e.preventDefault();
-
-    const email = document.getElementById('loginEmail').value.trim();
-
-    const senha = document.getElementById('loginSenha').value.trim();
-
-    try {
-
-      const response = await fetch(`${apiUrl}/autenticar`, {
-
-        method: 'POST',
-
-        headers: { 'Content-Type': 'application/json' },
-
-        body: JSON.stringify({ email, senha }),
-
-      });
-
-      if (response.ok) {
-
-        const usuario = await response.json();
-
-        sessionStorage.setItem('ID_USUARIO', usuario.id);
-
-        sessionStorage.setItem('NOME_USUARIO', usuario.nome);
-
-        sessionStorage.setItem('EMAIL_USUARIO', usuario.email);
-
-        alert(`Bem-vindo, ${usuario.nome}!`);
-
-        window.location.href = 'quiz.html'; // Redireciona para a dashboard 
-
-      } else {
-
-        alert('Credenciais inválidas.');
-
-      }
-
-    } catch (error) {
-
-      console.error('Erro ao autenticar:', error);
-
-      alert('Erro ao tentar realizar o login.');
-
-    }
-
-  });
-
-
-  // Cadastro - Validar e Salvar Novo Usuário 
-
-  formSignup.addEventListener('submit', async (e) => {
-
-    e.preventDefault();
-
-    const nome = document.getElementById('cadastroNome').value.trim();
-
-    const email = document.getElementById('cadastroEmail').value.trim();
-
-    const senha = document.getElementById('cadastroSenha').value.trim();
-
-    try {
-
-      const response = await fetch(`${apiUrl}/cadastrar`, {
-        method: 'POST',
-
-        headers: { 'Content-Type': 'application/json' },
-
-        body: JSON.stringify({ nome, email, senha }),
-
-      });
-
-      if (response.ok) {
-
-        alert('Cadastro realizado com sucesso! Faça login para continuar.');
-
-        formSignup.style.left = '450px';
-
-        formSignin.style.left = '25px';
-
-        btnColor.style.left = '0px';
-
-      } else {
-
-        const error = await response.text();
-
-        alert(`Erro no cadastro: ${error}`);
-
-      }
-
-    } catch (error) {
-
-      console.error('Erro ao realizar cadastro:', error);
-
-      alert('Erro ao tentar realizar o cadastro.');
-
-    }
-
-  });
-
-
-  // Logout - Limpar Sessão e Redirecionar 
-
-  document.getElementById('logout')?.addEventListener('click', () => {
-
-    sessionStorage.clear();
-
-    alert('Você saiu com sucesso.');
-
-    window.location.href = 'cadastroLogin.html'; // Redireciona para a página de login 
-
-  });
-
-</script>
-
-
-
-</body>
-
-
-
-</html>

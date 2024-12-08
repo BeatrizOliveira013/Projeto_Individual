@@ -16,7 +16,8 @@ async function autenticar(req, res) {
             return res.status(200).json({ 
                 id: usuario.id, 
                 nome: usuario.nome, 
-                email: usuario.email 
+                email: usuario.email,
+                imagem_perfil: usuario.imagem_perfil
             });
         } else {
             return res.status(401).json({ message: "Credenciais inválidas." });
@@ -43,7 +44,25 @@ async function cadastrar(req, res) {
     }
 }
 
+async function cadastrarUsuarioComImagem(req, res) {
+    try {
+        const { nome, email, senha } = req.body;
+        const imagem_perfil = req.file.filename; // Pega o nome do arquivo que foi salvo
+
+        if (!nome || !email || !senha || !imagem_perfil) {
+            return res.status(400).json({ message: "Todos os campos são obrigatórios!" });
+        }
+
+        await usuarioModel.cadastrarComImagem(nome, email, senha, imagem_perfil);
+        return res.status(201).json({ message: "Usuário cadastrado com sucesso com imagem!" });
+    } catch (error) {
+        console.error("Erro ao cadastrar usuário com imagem:", error);
+        return res.status(500).json({ message: "Erro ao cadastrar usuário com imagem. Tente novamente mais tarde." });
+    }
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    cadastrarUsuarioComImagem
 };
