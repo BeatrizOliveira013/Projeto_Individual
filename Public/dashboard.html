@@ -202,7 +202,7 @@
             document.getElementById('user-photo').src = userPhoto;
 
             try {
-                const response = await fetch('http://localhost:3333/dashboard');
+                const response = await fetch('http://192.162.15.7:3333/dashboard');
                 const data = await response.json();
 
                 document.getElementById('kpi-participantes').innerHTML = `Participantes: <strong>${data.participantes}</strong>`;
